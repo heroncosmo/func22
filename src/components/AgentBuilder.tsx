@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import AgentConfig from './AgentConfig';
 import ChatInterface from './ChatInterface';
@@ -26,7 +25,7 @@ const AgentBuilder = () => {
   const [isConfigured, setIsConfigured] = useState(false);
 
   useEffect(() => {
-    const hasBasicConfig = agentData.businessName && agentData.businessInfo;
+    const hasBasicConfig = Boolean(agentData.businessName && agentData.businessInfo);
     setIsConfigured(hasBasicConfig);
   }, [agentData]);
 
