@@ -1,8 +1,8 @@
 
-import AgentBuilder from '@/components/AgentBuilder';
+import MonetizedAgentBuilder from '@/components/MonetizedAgentBuilder';
 
 const Index = () => {
-  return <AgentBuilder />;
+  return <MonetizedAgentBuilder />;
 };
 
 export default Index;
