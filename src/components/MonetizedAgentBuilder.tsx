@@ -77,12 +77,22 @@ const MonetizedAgentBuilder = () => {
           
           <div className="flex items-center space-x-2">
             <Button
+              onClick={() => setShowWhatsAppTest(true)}
+              size="sm"
+              variant="outline"
+              className="flex items-center space-x-2"
+            >
+              <Smartphone className="h-4 w-4" />
+              <span>Testar no WhatsApp</span>
+            </Button>
+
+            <Button
               onClick={() => setShowUpgradeModal(true)}
               size="sm"
               className="bg-green-600 hover:bg-green-700 text-white flex items-center space-x-2"
             >
               <Globe className="h-4 w-4" />
-              <span>Criar Site Interativo</span>
+              <span>Publicar</span>
             </Button>
 
             {!subscription.isSubscribed && (
@@ -99,49 +109,13 @@ const MonetizedAgentBuilder = () => {
         </div>
       </div>
 
-      {/* Layout Principal - ChatGPT Style */}
+      {/* Main Layout - ChatGPT Style */}
       <div className="flex h-[calc(100vh-73px)]">
-        {/* Sidebar Esquerda - Lista de Configurações */}
-        <div className="w-64 border-r border-gray-200 bg-gray-50 overflow-y-auto">
-          <div className="p-4">
-            <Button
-              onClick={() => {
-                setAgentData({
-                  businessName: '',
-                  businessType: 'restaurante',
-                  businessInfo: '',
-                  personality: 'amigável',
-                  welcomeMessage: 'Olá! Como posso ajudá-lo hoje?',
-                  template: 'restaurante'
-                });
-              }}
-              className="w-full mb-4 bg-black text-white hover:bg-gray-800"
-            >
-              + Novo Funcionário IA
-            </Button>
-            
-            <div className="space-y-2">
-              <div className="text-sm font-medium text-gray-500 px-2">Configurações</div>
-              <div className="bg-white rounded-lg p-3 border border-gray-200">
-                <div className="flex items-center space-x-2">
-                  <Bot className="h-4 w-4 text-gray-600" />
-                  <span className="text-sm font-medium">
-                    {agentData.businessName || 'Funcionário IA'}
-                  </span>
-                </div>
-                <p className="text-xs text-gray-500 mt-1">
-                  {agentData.businessType}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Área Central - Chat Style Interface */}
+        {/* Chat Interface - Main Area */}
         <div className="flex-1 flex flex-col relative">
-          {/* WhatsApp Test Overlay - Positioned over chat */}
+          {/* WhatsApp Test Overlay */}
           {showWhatsAppTest && (
-            <div className="absolute inset-0 bg-black/20 flex items-start justify-center pt-16 z-30">
+            <div className="absolute inset-0 bg-black/20 flex items-center justify-center z-50">
               <div className="relative">
                 <Button
                   onClick={() => setShowWhatsAppTest(false)}
@@ -156,53 +130,18 @@ const MonetizedAgentBuilder = () => {
             </div>
           )}
 
-          {/* Header do Chat */}
-          <div className="border-b border-gray-200 bg-white px-6 py-4 z-20 relative">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                  <MessageSquare className="h-5 w-5 text-white" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">
-                    Assistente de Configuração
-                  </h3>
-                  <p className="text-sm text-gray-500">
-                    Configure seu funcionário IA conversando comigo
-                  </p>
-                </div>
-              </div>
-              
-              <Button
-                onClick={() => setShowWhatsAppTest(true)}
-                variant="outline"
-                size="sm"
-                className="flex items-center space-x-2"
-              >
-                <Smartphone className="h-4 w-4" />
-                <span>Testar Funcionário IA</span>
-              </Button>
-            </div>
-          </div>
+          <CalibrationChat 
+            agentData={agentData} 
+            onAgentUpdate={handleAgentUpdate}
+          />
+        </div>
 
-          {/* Layout do Chat */}
-          <div className="flex-1 flex">
-            {/* Chat de Calibração */}
-            <div className="flex-1">
-              <CalibrationChat 
-                agentData={agentData} 
-                onAgentUpdate={handleAgentUpdate}
-              />
-            </div>
-
-            {/* Painel de Informações do Funcionário */}
-            <div className="w-80 border-l border-gray-200">
-              <EmployeeInfoPanel 
-                agentData={agentData}
-                onAgentUpdate={handleAgentUpdate}
-              />
-            </div>
-          </div>
+        {/* Right Panel - Employee Info */}
+        <div className="w-80 border-l border-gray-200">
+          <EmployeeInfoPanel 
+            agentData={agentData}
+            onAgentUpdate={handleAgentUpdate}
+          />
         </div>
       </div>
 
