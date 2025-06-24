@@ -99,28 +99,65 @@ const MonetizedAgentBuilder = () => {
         </div>
       </div>
 
-      {/* Layout Principal */}
+      {/* Layout Principal - ChatGPT Style */}
       <div className="flex h-[calc(100vh-73px)]">
-        {/* Sidebar Esquerda - Configurações */}
-        <div className="w-80 border-r border-gray-200 bg-gray-50 overflow-y-auto">
-          <div className="p-6">
-            <div className="space-y-1 mb-6">
-              <h2 className="text-lg font-semibold text-gray-900">
-                Configure seu Funcionário IA
-              </h2>
-              <p className="text-sm text-gray-600">
-                Transforme seu atendimento com inteligência artificial de última geração
-              </p>
-            </div>
+        {/* Sidebar Esquerda - Lista de Configurações */}
+        <div className="w-64 border-r border-gray-200 bg-gray-50 overflow-y-auto">
+          <div className="p-4">
+            <Button
+              onClick={() => {
+                setAgentData({
+                  businessName: '',
+                  businessType: 'restaurante',
+                  businessInfo: '',
+                  personality: 'amigável',
+                  welcomeMessage: 'Olá! Como posso ajudá-lo hoje?',
+                  template: 'restaurante'
+                });
+              }}
+              className="w-full mb-4 bg-black text-white hover:bg-gray-800"
+            >
+              + Novo Funcionário IA
+            </Button>
             
-            <AgentConfig agentData={agentData} onUpdate={handleAgentUpdate} />
+            <div className="space-y-2">
+              <div className="text-sm font-medium text-gray-500 px-2">Configurações</div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="flex items-center space-x-2">
+                  <Bot className="h-4 w-4 text-gray-600" />
+                  <span className="text-sm font-medium">
+                    {agentData.businessName || 'Funcionário IA'}
+                  </span>
+                </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  {agentData.businessType}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Área Principal - Chat de Calibração */}
-        <div className="flex-1 flex flex-col">
+        {/* Área Central - Chat Style Interface */}
+        <div className="flex-1 flex flex-col relative">
+          {/* WhatsApp Test Overlay - Positioned over chat */}
+          {showWhatsAppTest && (
+            <div className="absolute inset-0 bg-black/20 flex items-start justify-center pt-16 z-30">
+              <div className="relative">
+                <Button
+                  onClick={() => setShowWhatsAppTest(false)}
+                  variant="ghost"
+                  size="icon"
+                  className="absolute -top-2 -right-2 z-10 bg-white rounded-full shadow-lg hover:bg-gray-100"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+                <WhatsAppSimulator agentData={agentData} />
+              </div>
+            </div>
+          )}
+
           {/* Header do Chat */}
-          <div className="border-b border-gray-200 bg-white px-6 py-4">
+          <div className="border-b border-gray-200 bg-white px-6 py-4 z-20 relative">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
@@ -131,26 +168,24 @@ const MonetizedAgentBuilder = () => {
                     Assistente de Configuração
                   </h3>
                   <p className="text-sm text-gray-500">
-                    Converse comigo para calibrar seu funcionário IA
+                    Configure seu funcionário IA conversando comigo
                   </p>
                 </div>
               </div>
               
-              {isConfigured && (
-                <Button
-                  onClick={() => setShowWhatsAppTest(true)}
-                  variant="outline"
-                  size="sm"
-                  className="flex items-center space-x-2"
-                >
-                  <Smartphone className="h-4 w-4" />
-                  <span>Testar no WhatsApp</span>
-                </Button>
-              )}
+              <Button
+                onClick={() => setShowWhatsAppTest(true)}
+                variant="outline"
+                size="sm"
+                className="flex items-center space-x-2"
+              >
+                <Smartphone className="h-4 w-4" />
+                <span>Testar Funcionário IA</span>
+              </Button>
             </div>
           </div>
 
-          {/* Layout do Chat e Painel */}
+          {/* Layout do Chat */}
           <div className="flex-1 flex">
             {/* Chat de Calibração */}
             <div className="flex-1">
@@ -170,23 +205,6 @@ const MonetizedAgentBuilder = () => {
           </div>
         </div>
       </div>
-
-      {/* WhatsApp Test Overlay */}
-      {showWhatsAppTest && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="relative">
-            <Button
-              onClick={() => setShowWhatsAppTest(false)}
-              variant="ghost"
-              size="icon"
-              className="absolute -top-2 -right-2 z-10 bg-white rounded-full shadow-lg hover:bg-gray-100"
-            >
-              <X className="h-4 w-4" />
-            </Button>
-            <WhatsAppSimulator agentData={agentData} />
-          </div>
-        </div>
-      )}
 
       {/* Modal de Upgrade */}
       {showUpgradeModal && (

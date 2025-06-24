@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Send, Bot, User, Sparkles, Store, Coffee, Car, Heart, Briefcase, Home } from 'lucide-react';
+import { Send, Bot, User, Sparkles, Store, Coffee, Car, Heart, Briefcase, Home, Plus } from 'lucide-react';
 import { AgentData } from './MonetizedAgentBuilder';
 import { useToast } from '@/hooks/use-toast';
 
@@ -18,32 +18,76 @@ interface CalibrationChatProps {
   onAgentUpdate: (data: Partial<AgentData>) => void;
 }
 
-const businessSuggestions = [
-  { icon: Store, label: 'Loja', type: 'loja' },
-  { icon: Coffee, label: 'Restaurante', type: 'restaurante' },
-  { icon: Car, label: 'Oficina', type: 'oficina' },
-  { icon: Heart, label: 'Clínica', type: 'clinica' },
-  { icon: Briefcase, label: 'Escritório', type: 'escritorio' },
-  { icon: Home, label: 'Hotel', type: 'hotel' },
+const businessTemplates = [
+  { 
+    icon: Store, 
+    label: 'Loja de Roupas', 
+    type: 'loja',
+    description: 'Venda de vestuário e acessórios',
+    welcomeMessage: 'Olá! Bem-vindo à nossa loja! Como posso ajudar você a encontrar a peça perfeita?'
+  },
+  { 
+    icon: Coffee, 
+    label: 'Restaurante', 
+    type: 'restaurante',
+    description: 'Estabelecimento de alimentação',
+    welcomeMessage: 'Olá! Bem-vindo ao nosso restaurante! Posso ajudá-lo com o cardápio ou fazer uma reserva?'
+  },
+  { 
+    icon: Car, 
+    label: 'Oficina Mecânica', 
+    type: 'oficina',
+    description: 'Serviços automotivos',
+    welcomeMessage: 'Olá! Precisa de ajuda com seu veículo? Estou aqui para agendar seu atendimento!'
+  },
+  { 
+    icon: Heart, 
+    label: 'Clínica Médica', 
+    type: 'clinica',
+    description: 'Serviços de saúde',
+    welcomeMessage: 'Olá! Como posso ajudá-lo a agendar sua consulta ou esclarecer dúvidas?'
+  },
+  { 
+    icon: Briefcase, 
+    label: 'Escritório/Consultoria', 
+    type: 'escritorio',
+    description: 'Serviços profissionais',
+    welcomeMessage: 'Olá! Como posso ajudá-lo com nossos serviços profissionais?'
+  },
+  { 
+    icon: Home, 
+    label: 'Hotel/Pousada', 
+    type: 'hotel',
+    description: 'Hospedagem e turismo',
+    welcomeMessage: 'Olá! Bem-vindo! Posso ajudá-lo com reservas ou informações sobre nossa hospedagem?'
+  },
 ];
 
 const CalibrationChat: React.FC<CalibrationChatProps> = ({ agentData, onAgentUpdate }) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: 'Olá! Sou seu assistente para configurar o funcionário IA perfeito para seu negócio. Vamos começar? Que tipo de negócio você tem?',
+      content: 'Olá! Sou seu assistente para configurar o funcionário IA perfeito para seu negócio. Escolha um modelo abaixo ou me conte que tipo de negócio você tem!',
       sender: 'assistant',
       timestamp: new Date()
     }
   ]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showTemplates, setShowTemplates] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  useEffect(() => {
+    // Hide templates if user has started configuring
+    if (agentData.businessName || messages.length > 1) {
+      setShowTemplates(false);
+    }
+  }, [agentData.businessName, messages.length]);
 
   const buildSystemPrompt = () => {
     return `Você é um assistente especializado em configurar agentes de IA para negócios. Seu objetivo é entender o negócio do usuário e ajudar a configurar um funcionário virtual perfeito.
@@ -65,6 +109,24 @@ INFORMAÇÕES ATUAIS DO AGENTE:
 Responda sempre em português brasileiro de forma natural e útil.`;
   };
 
+  const handleTemplateSelect = (template: typeof businessTemplates[0]) => {
+    onAgentUpdate({ 
+      businessType: template.type, 
+      template: template.type,
+      welcomeMessage: template.welcomeMessage
+    });
+    
+    const templateMessage: Message = {
+      id: Date.now().toString(),
+      content: `Ótima escolha! Você selecionou: ${template.label}. Agora me conte o nome do seu ${template.label.toLowerCase()} e mais detalhes sobre ele.`,
+      sender: 'assistant',
+      timestamp: new Date()
+    };
+    
+    setMessages(prev => [...prev, templateMessage]);
+    setShowTemplates(false);
+  };
+
   const sendMessage = async () => {
     if (!inputMessage.trim()) return;
 
@@ -78,6 +140,7 @@ Responda sempre em português brasileiro de forma natural e útil.`;
     setMessages(prev => [...prev, userMessage]);
     setInputMessage('');
     setIsLoading(true);
+    setShowTemplates(false);
 
     try {
       const conversationHistory = messages.map(msg => ({
@@ -163,12 +226,6 @@ Responda sempre em português brasileiro de forma natural e útil.`;
     }
   };
 
-  const handleSuggestionClick = (suggestion: typeof businessSuggestions[0]) => {
-    const message = `Tenho um ${suggestion.label.toLowerCase()}`;
-    setInputMessage(message);
-    onAgentUpdate({ businessType: suggestion.type, template: suggestion.type });
-  };
-
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -177,37 +234,56 @@ Responda sempre em português brasileiro de forma natural e útil.`;
   };
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Quick Suggestions */}
-      {!agentData.businessName && (
-        <div className="p-4 border-b bg-gray-50">
-          <p className="text-sm text-gray-600 mb-3">Sugestões rápidas:</p>
-          <div className="flex flex-wrap gap-2">
-            {businessSuggestions.map((suggestion) => {
-              const Icon = suggestion.icon;
+    <div className="flex flex-col h-full bg-white">
+      {/* Business Templates */}
+      {showTemplates && (
+        <div className="p-6 border-b bg-gray-50">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Escolha um modelo para começar:</h3>
+          <div className="grid grid-cols-2 gap-3">
+            {businessTemplates.map((template) => {
+              const Icon = template.icon;
               return (
                 <button
-                  key={suggestion.type}
-                  onClick={() => handleSuggestionClick(suggestion)}
-                  className="flex items-center space-x-2 px-3 py-1.5 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                  key={template.type}
+                  onClick={() => handleTemplateSelect(template)}
+                  className="flex items-start space-x-3 p-4 bg-white border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-all text-left group"
                 >
-                  <Icon className="h-4 w-4 text-gray-600" />
-                  <span className="text-sm text-gray-700">{suggestion.label}</span>
+                  <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-blue-100 transition-colors">
+                    <Icon className="h-5 w-5 text-gray-600 group-hover:text-blue-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-medium text-gray-900 group-hover:text-blue-900">
+                      {template.label}
+                    </h4>
+                    <p className="text-sm text-gray-500 mt-1">
+                      {template.description}
+                    </p>
+                  </div>
                 </button>
               );
             })}
+          </div>
+          
+          <div className="flex items-center justify-center mt-4">
+            <button
+              onClick={() => setShowTemplates(false)}
+              className="flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-800"
+            >
+              <Plus className="h-4 w-4" />
+              <span>Ou descreva seu próprio negócio</span>
+            </button>
           </div>
         </div>
       )}
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-6 space-y-4">
         {messages.map((message) => (
           <div
             key={message.id}
             className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
           >
-            <div className={`flex items-start space-x-2 max-w-xs lg:max-w-md`}>
+            <div className={`flex items-start space-x-3 max-w-xs lg:max-w-md`}>
               {message.sender === 'assistant' && (
                 <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
                   <Sparkles className="h-4 w-4 text-white" />
@@ -242,7 +318,7 @@ Responda sempre em português brasileiro de forma natural e útil.`;
         {/* Typing Indicator */}
         {isLoading && (
           <div className="flex justify-start">
-            <div className="flex items-start space-x-2">
+            <div className="flex items-start space-x-3">
               <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                 <Sparkles className="h-4 w-4 text-white" />
               </div>
@@ -261,20 +337,20 @@ Responda sempre em português brasileiro de forma natural e útil.`;
       </div>
 
       {/* Input */}
-      <div className="p-4 border-t bg-white">
-        <div className="flex space-x-2">
+      <div className="p-6 border-t bg-white">
+        <div className="flex space-x-3">
           <Input
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Descreva seu negócio ou faça uma pergunta..."
             disabled={isLoading}
-            className="flex-1"
+            className="flex-1 rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500"
           />
           <Button
             onClick={sendMessage}
             disabled={isLoading || !inputMessage.trim()}
-            className="bg-black hover:bg-gray-800 text-white"
+            className="bg-black hover:bg-gray-800 text-white rounded-xl px-6"
           >
             <Send className="h-4 w-4" />
           </Button>
