@@ -4,7 +4,9 @@ import AgentConfig from './AgentConfig';
 import WhatsAppSimulator from './WhatsAppSimulator';
 import PublishAgent from './PublishAgent';
 import SubscriptionPlans from './SubscriptionPlans';
-import { Bot, MessageSquare, Sparkles, Crown, Settings, Smartphone, TestTube, Globe } from 'lucide-react';
+import CalibrationChat from './CalibrationChat';
+import EmployeeInfoPanel from './EmployeeInfoPanel';
+import { Bot, MessageSquare, Sparkles, Crown, Settings, Smartphone, TestTube, Globe, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -42,6 +44,7 @@ const MonetizedAgentBuilder = () => {
 
   const [isConfigured, setIsConfigured] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [showWhatsAppTest, setShowWhatsAppTest] = useState(false);
 
   useEffect(() => {
     const hasBasicConfig = Boolean(agentData.businessName && agentData.businessInfo);
@@ -73,17 +76,6 @@ const MonetizedAgentBuilder = () => {
           </div>
           
           <div className="flex items-center space-x-2">
-            {isConfigured && (
-              <Button
-                variant="outline"
-                size="sm"
-                className="flex items-center space-x-2"
-              >
-                <TestTube className="h-4 w-4" />
-                <span>Testar Funcionário Inteligente</span>
-              </Button>
-            )}
-            
             <Button
               onClick={() => setShowUpgradeModal(true)}
               size="sm"
@@ -125,7 +117,7 @@ const MonetizedAgentBuilder = () => {
           </div>
         </div>
 
-        {/* Área Principal - Chat */}
+        {/* Área Principal - Chat de Calibração */}
         <div className="flex-1 flex flex-col">
           {/* Header do Chat */}
           <div className="border-b border-gray-200 bg-white px-6 py-4">
@@ -136,56 +128,65 @@ const MonetizedAgentBuilder = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900">
-                    {agentData.businessName || 'Seu Funcionário IA'}
+                    Assistente de Configuração
                   </h3>
                   <p className="text-sm text-gray-500">
-                    {isConfigured ? 'Pronto para atender seus clientes 24/7' : 'Configure à esquerda para começar'}
+                    Converse comigo para calibrar seu funcionário IA
                   </p>
                 </div>
               </div>
               
               {isConfigured && (
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="text-sm text-green-600 font-medium">Online</span>
-                </div>
+                <Button
+                  onClick={() => setShowWhatsAppTest(true)}
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center space-x-2"
+                >
+                  <Smartphone className="h-4 w-4" />
+                  <span>Testar no WhatsApp</span>
+                </Button>
               )}
             </div>
           </div>
 
-          {/* Área do Chat */}
-          <div className="flex-1 flex items-center justify-center p-6">
-            {isConfigured ? (
-              <div className="w-full max-w-md">
-                <WhatsAppSimulator agentData={agentData} />
-              </div>
-            ) : (
-              <div className="text-center space-y-6 max-w-md">
-                <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto">
-                  <Bot className="h-10 w-10 text-gray-400" />
-                </div>
-                <div className="space-y-2">
-                  <h3 className="text-xl font-semibold text-gray-900">
-                    Seu Funcionário IA está esperando
-                  </h3>
-                  <p className="text-gray-600">
-                    Complete a configuração à esquerda para começar a treinar seu assistente inteligente personalizado
-                  </p>
-                </div>
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <h4 className="font-medium text-blue-900 mb-2">🚀 Por que escolher FuncionárioIA?</h4>
-                  <ul className="text-sm text-blue-800 space-y-1">
-                    <li>• Atendimento 24/7 sem pausas</li>
-                    <li>• Reduz custos em até 80%</li>
-                    <li>• Aprende com seu negócio</li>
-                    <li>• Integração WhatsApp nativa</li>
-                  </ul>
-                </div>
-              </div>
-            )}
+          {/* Layout do Chat e Painel */}
+          <div className="flex-1 flex">
+            {/* Chat de Calibração */}
+            <div className="flex-1">
+              <CalibrationChat 
+                agentData={agentData} 
+                onAgentUpdate={handleAgentUpdate}
+              />
+            </div>
+
+            {/* Painel de Informações do Funcionário */}
+            <div className="w-80 border-l border-gray-200">
+              <EmployeeInfoPanel 
+                agentData={agentData}
+                onAgentUpdate={handleAgentUpdate}
+              />
+            </div>
           </div>
         </div>
       </div>
+
+      {/* WhatsApp Test Overlay */}
+      {showWhatsAppTest && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="relative">
+            <Button
+              onClick={() => setShowWhatsAppTest(false)}
+              variant="ghost"
+              size="icon"
+              className="absolute -top-2 -right-2 z-10 bg-white rounded-full shadow-lg hover:bg-gray-100"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+            <WhatsAppSimulator agentData={agentData} />
+          </div>
+        </div>
+      )}
 
       {/* Modal de Upgrade */}
       {showUpgradeModal && (
