@@ -2475,17 +2475,17 @@ Perfeito! Você terá 7 dias para testar todas as funcionalidades sem pagar nada
 
 
   return (
-    <div className="flex-1 flex flex-col h-full min-h-0">
-      {/* Chat Container - SEM HEADER - com altura mínima 0 para permitir overflow */}
+    <div className="flex-1 flex flex-col h-full min-h-0 overflow-hidden">
+      {/* Chat Container - Layout Mobile Otimizado */}
       <div className="flex-1 overflow-y-auto overflow-x-hidden bg-white min-h-0">
-        <div className="w-full max-w-full md:max-w-2xl mx-auto px-3 md:px-4 py-3 md:py-4 space-y-3 md:space-y-4 pb-8 md:pb-6">
-      {showTemplates ? (
-        renderTemplates()
-      ) : (
-        <>
+        <div className="w-full px-3 md:px-4 py-3 md:py-4 space-y-3 md:space-y-4 pb-20 md:pb-6">
+          {showTemplates ? (
+            renderTemplates()
+          ) : (
+            <>
               {messages.map((message) => (
                 <div key={message.id} className="mb-3 md:mb-4">
-                  <div className="flex items-start gap-2 md:gap-4 w-full">
+                  <div className="flex items-start gap-2 md:gap-4 w-full max-w-full">
                     <div className="w-6 h-6 md:w-8 md:h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                       {message.sender === 'assistant' ? (
                         <div className="w-6 h-6 md:w-8 md:h-8 bg-black rounded-full flex items-center justify-center">
@@ -2500,39 +2500,39 @@ Perfeito! Você terá 7 dias para testar todas as funcionalidades sem pagar nada
                     
                     <div className="flex-1 min-w-0 overflow-hidden">
                       {(!message.type || message.type === 'text' || message.type === 'completion') && (
-                        <div className="text-xs md:text-base text-gray-900 leading-relaxed whitespace-pre-wrap break-words word-break">
+                        <div className="text-xs md:text-base text-gray-900 leading-relaxed whitespace-pre-wrap break-words overflow-wrap-anywhere">
                           {message.content}
                         </div>
                       )}
 
                       {message.type === 'field' && message.fieldData && (
-                        <div className="w-full">
-                          <div className="text-xs md:text-base text-gray-900 leading-relaxed whitespace-pre-wrap mb-3 break-words word-break">
+                        <div className="w-full max-w-full">
+                          <div className="text-xs md:text-base text-gray-900 leading-relaxed whitespace-pre-wrap mb-3 break-words overflow-wrap-anywhere">
                             {message.content}
                           </div>
                           <div className="w-full overflow-hidden">
-                          <InlineFieldInput
-                            fieldName={message.fieldData.fieldName}
-                            fieldLabel={message.fieldData.fieldLabel}
-                            fieldType={message.fieldData.fieldType}
-                            placeholder={message.fieldData.placeholder}
-                            currentValue={message.fieldData.currentValue}
-                            onSubmit={handleFieldResponse}
-                            onCancel={() => {
-                              setMessages(prev => prev.filter(m => m.id !== message.id));
-                            }}
-                            options={message.fieldData.options}
-                          />
+                            <InlineFieldInput
+                              fieldName={message.fieldData.fieldName}
+                              fieldLabel={message.fieldData.fieldLabel}
+                              fieldType={message.fieldData.fieldType}
+                              placeholder={message.fieldData.placeholder}
+                              currentValue={message.fieldData.currentValue}
+                              onSubmit={handleFieldResponse}
+                              onCancel={() => {
+                                setMessages(prev => prev.filter(m => m.id !== message.id));
+                              }}
+                              options={message.fieldData.options}
+                            />
                           </div>
                         </div>
                       )}
 
                       {message.type === 'whatsapp' && (
-                        <div className="w-full">
-                          <div className="text-xs md:text-base text-gray-900 leading-relaxed whitespace-pre-wrap mb-2 break-words word-break">
+                        <div className="w-full max-w-full">
+                          <div className="text-xs md:text-base text-gray-900 leading-relaxed whitespace-pre-wrap mb-2 break-words overflow-wrap-anywhere">
                             {message.content}
                           </div>
-                          {/* WhatsApp Simulator SEM container cinza - alinhado à esquerda */}
+                          {/* WhatsApp Simulator - Responsivo */}
                           <div className="w-full max-w-[280px] md:max-w-sm">
                             <div className="flex items-center justify-between mb-1">
                               <span className="text-xs text-gray-600">WhatsApp Simulator</span>
@@ -2547,12 +2547,12 @@ Perfeito! Você terá 7 dias para testar todas as funcionalidades sem pagar nada
                                 <X className="h-3 w-3" />
                               </Button>
                             </div>
-                              <WhatsAppSimulator 
-                                agentData={agentData} 
-                                onClose={() => {
-                                  setMessages(prev => prev.filter(m => m.id !== message.id));
-                                }}
-                              />
+                            <WhatsAppSimulator 
+                              agentData={agentData} 
+                              onClose={() => {
+                                setMessages(prev => prev.filter(m => m.id !== message.id));
+                              }}
+                            />
                           </div>
                         </div>
                       )}
@@ -2578,45 +2578,45 @@ Perfeito! Você terá 7 dias para testar todas as funcionalidades sem pagar nada
                 </div>
               )}
               <div ref={messagesEndRef} />
-        </>
-      )}
+            </>
+          )}
         </div>
       </div>
 
-      {/* Input Area - SÓ APARECE APÓS PRIMEIRA INTERAÇÃO */}
+      {/* Input Area - Mobile Fixo no Rodapé */}
       {!showTemplates && (
-        <div className="fixed bottom-0 left-0 right-0 md:static border-t border-gray-200 bg-white p-3 md:p-4 z-10">
-          <div className="w-full max-w-2xl mx-auto px-1 md:px-0">
-            <div className="flex items-center gap-2">
-              <div className="flex-1 relative">
+        <div className="border-t border-gray-200 bg-white p-3 md:p-4 flex-shrink-0">
+          <div className="w-full max-w-full mx-auto">
+            <div className="flex items-center gap-2 w-full">
+              <div className="flex-1 relative w-full">
                 <input
                   type="text"
-              value={currentMessage}
-              onChange={(e) => setCurrentMessage(e.target.value)}
-              onKeyPress={handleKeyPress}
+                  value={currentMessage}
+                  onChange={(e) => setCurrentMessage(e.target.value)}
+                  onKeyPress={handleKeyPress}
                   placeholder="Digite sua mensagem..."
-                  className="w-full px-3 py-3 md:py-3 pr-10 bg-gray-50 border border-gray-300 rounded-lg text-sm md:text-base
+                  className="w-full px-3 py-3 pr-12 bg-gray-50 border border-gray-300 rounded-lg text-sm md:text-base
                     focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent
                     placeholder-gray-500"
-            />
-            <button
-              onClick={() => sendMessage()}
-              disabled={!currentMessage.trim() || isLoading}
+                />
+                <button
+                  onClick={() => sendMessage()}
+                  disabled={!currentMessage.trim() || isLoading}
                   className="absolute right-2 top-1/2 transform -translate-y-1/2 
                     bg-black hover:bg-gray-800 disabled:bg-gray-300 
                     text-white rounded-lg p-1.5 md:p-2 transition-colors"
-            >
+                >
                   {isLoading ? (
                     <div className="animate-spin rounded-full h-3 w-3 md:h-4 md:w-4 border-2 border-white border-t-transparent"></div>
                   ) : (
-                    <svg className="w-3 h-3 md:w-4 md:w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                     </svg>
                   )}
-            </button>
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
         </div>
       )}
     </div>
