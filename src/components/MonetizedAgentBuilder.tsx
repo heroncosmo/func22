@@ -442,7 +442,7 @@ const MonetizedAgentBuilder = () => {
                   <Bot className="h-3 w-3 text-white" />
                 </div>
                 <span className="text-sm font-medium text-gray-900">
-                  {agentData.businessName || 'FuncionárioPro'}
+                  FuncionárioPro
                 </span>
               </div>
             </div>
