@@ -239,7 +239,7 @@ const PublishAgent: React.FC<PublishAgentProps> = ({
               <div className="space-y-4">
                 <div>
                   <Label htmlFor="whatsapp" className="text-sm font-medium text-gray-700">
-                    Número do WhatsApp Business
+                    Número do WhatsApp Web
                   </Label>
                   <Input
                     id="whatsapp"

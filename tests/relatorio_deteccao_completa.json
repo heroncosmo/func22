@@ -1,0 +1,757 @@
+{
+  "timestamp": "2025-06-26T14:02:48.358525",
+  "total_tests": 87,
+  "correct_detections": 83,
+  "accuracy": 95.40229885057471,
+  "results": [
+    {
+      "test": 1,
+      "message": "oi sou advogado",
+      "expected": "advogado",
+      "detected": "advogado",
+      "correct": true,
+      "response": "Detectei que você trabalha com **advocacia**. Vou configurar seu funcionário IA especializado em atendimento jurídico."
+    },
+    {
+      "test": 2,
+      "message": "trabalho com advocacia",
+      "expected": "advogado",
+      "detected": "advogado",
+      "correct": true,
+      "response": "Detectei que você trabalha com **advocacia**. Vou configurar seu funcionário IA especializado em atendimento jurídico."
+    },
+    {
+      "test": 3,
+      "message": "tenho um escritório jurídico",
+      "expected": "advogado",
+      "detected": "advogado",
+      "correct": true,
+      "response": "Detectei que você trabalha com **advocacia**. Vou configurar seu funcionário IA especializado em atendimento jurídico."
+    },
+    {
+      "test": 4,
+      "message": "sou contador",
+      "expected": "contador",
+      "detected": "contador",
+      "correct": true,
+      "response": "Detectei que você trabalha com **contabilidade**. Vou configurar seu funcionário IA especializado em serviços contábeis."
+    },
+    {
+      "test": 5,
+      "message": "trabalho com contabilidade",
+      "expected": "contador",
+      "detected": "contador",
+      "correct": true,
+      "response": "Detectei que você trabalha com **contabilidade**. Vou configurar seu funcionário IA especializado em serviços contábeis."
+    },
+    {
+      "test": 6,
+      "message": "faço declaração de imposto",
+      "expected": "contador",
+      "detected": "contador",
+      "correct": true,
+      "response": "Detectei que você trabalha com **contabilidade**. Vou configurar seu funcionário IA especializado em serviços contábeis."
+    },
+    {
+      "test": 7,
+      "message": "sou arquiteto",
+      "expected": "arquiteto",
+      "detected": "arquiteto",
+      "correct": true,
+      "response": "Detectei que você trabalha com **arquiteto**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 8,
+      "message": "trabalho com projetos",
+      "expected": "arquiteto",
+      "detected": "arquiteto",
+      "correct": true,
+      "response": "Detectei que você trabalha com **arquiteto**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 9,
+      "message": "sou engenheiro civil",
+      "expected": "engenheiro",
+      "detected": "engenheiro",
+      "correct": true,
+      "response": "Detectei que você trabalha com **engenheiro**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 10,
+      "message": "sou médico",
+      "expected": "medico",
+      "detected": "medico",
+      "correct": true,
+      "response": "Detectei que você trabalha com **medicina**. Vou configurar seu funcionário IA especializado em atendimento médico."
+    },
+    {
+      "test": 11,
+      "message": "tenho uma clínica",
+      "expected": "medico",
+      "detected": "medico",
+      "correct": true,
+      "response": "Detectei que você trabalha com **medicina**. Vou configurar seu funcionário IA especializado em atendimento médico."
+    },
+    {
+      "test": 12,
+      "message": "sou dentista",
+      "expected": "dentista",
+      "detected": "dentista",
+      "correct": true,
+      "response": "Detectei que você trabalha com **odontologia**. Vou configurar seu funcionário IA especializado em cuidados dentários."
+    },
+    {
+      "test": 13,
+      "message": "trabalho com odontologia",
+      "expected": "dentista",
+      "detected": "dentista",
+      "correct": true,
+      "response": "Detectei que você trabalha com **odontologia**. Vou configurar seu funcionário IA especializado em cuidados dentários."
+    },
+    {
+      "test": 14,
+      "message": "sou fisioterapeuta",
+      "expected": "fisioterapeuta",
+      "detected": "fisioterapeuta",
+      "correct": true,
+      "response": "Detectei que você trabalha com **fisioterapeuta**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 15,
+      "message": "trabalho com reabilitação",
+      "expected": "fisioterapeuta",
+      "detected": "fisioterapeuta",
+      "correct": true,
+      "response": "Detectei que você trabalha com **fisioterapeuta**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 16,
+      "message": "sou psicólogo",
+      "expected": "psicologo",
+      "detected": "psicologo",
+      "correct": true,
+      "response": "Detectei que você trabalha com **psicologo**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 17,
+      "message": "faço terapia",
+      "expected": "psicologo",
+      "detected": "psicologo",
+      "correct": true,
+      "response": "Detectei que você trabalha com **psicologo**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 18,
+      "message": "sou veterinário",
+      "expected": "veterinario",
+      "detected": "veterinario",
+      "correct": true,
+      "response": "Detectei que você trabalha com **veterinario**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 19,
+      "message": "cuido de pets",
+      "expected": "veterinario",
+      "detected": "veterinario",
+      "correct": true,
+      "response": "Detectei que você trabalha com **veterinario**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 20,
+      "message": "tenho uma farmácia",
+      "expected": "farmacia",
+      "detected": "farmacia",
+      "correct": true,
+      "response": "Detectei que você trabalha com **farmácia**. Vou configurar seu funcionário IA especializado em medicamentos e delivery."
+    },
+    {
+      "test": 21,
+      "message": "vendo medicamentos",
+      "expected": "farmacia",
+      "detected": "farmacia",
+      "correct": true,
+      "response": "Detectei que você trabalha com **farmácia**. Vou configurar seu funcionário IA especializado em medicamentos e delivery."
+    },
+    {
+      "test": 22,
+      "message": "tenho um restaurante",
+      "expected": "restaurante",
+      "detected": "restaurante",
+      "correct": true,
+      "response": "Detectei que você trabalha com **alimentação**. Vou configurar seu funcionário IA especializado em delivery e reservas."
+    },
+    {
+      "test": 23,
+      "message": "trabalho com delivery",
+      "expected": "restaurante",
+      "detected": "restaurante",
+      "correct": true,
+      "response": "Detectei que você trabalha com **alimentação**. Vou configurar seu funcionário IA especializado em delivery e reservas."
+    },
+    {
+      "test": 24,
+      "message": "tenho uma pizzaria",
+      "expected": "restaurante",
+      "detected": "restaurante",
+      "correct": true,
+      "response": "Detectei que você trabalha com **alimentação**. Vou configurar seu funcionário IA especializado em delivery e reservas."
+    },
+    {
+      "test": 25,
+      "message": "trabalho com comida",
+      "expected": "restaurante",
+      "detected": "restaurante",
+      "correct": true,
+      "response": "Detectei que você trabalha com **alimentação**. Vou configurar seu funcionário IA especializado em delivery e reservas."
+    },
+    {
+      "test": 26,
+      "message": "tenho uma padaria",
+      "expected": "padaria",
+      "detected": "padaria",
+      "correct": true,
+      "response": "Detectei que você trabalha com **padaria**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 27,
+      "message": "vendo pães",
+      "expected": "padaria",
+      "detected": "padaria",
+      "correct": true,
+      "response": "Detectei que você trabalha com **padaria**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 28,
+      "message": "trabalho com açaí",
+      "expected": "acai",
+      "detected": "acai",
+      "correct": true,
+      "response": "Detectei que você trabalha com **acai**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 29,
+      "message": "vendo vitaminas",
+      "expected": "acai",
+      "detected": "acai",
+      "correct": true,
+      "response": "Detectei que você trabalha com **acai**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 30,
+      "message": "tenho hamburgueria",
+      "expected": "hamburgueria",
+      "detected": "hamburgueria",
+      "correct": true,
+      "response": "Detectei que você trabalha com **hamburgueria**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 31,
+      "message": "trabalho com lanches",
+      "expected": "hamburgueria",
+      "detected": "restaurante",
+      "correct": false,
+      "response": "Detectei que você trabalha com **alimentação**. Vou configurar seu funcionário IA especializado em delivery e reservas."
+    },
+    {
+      "test": 32,
+      "message": "tenho um salão",
+      "expected": "salao",
+      "detected": "salao",
+      "correct": true,
+      "response": "Detectei que você trabalha com **beleza**. Vou configurar seu funcionário IA especializado em agendamentos e cuidados estéticos."
+    },
+    {
+      "test": 33,
+      "message": "trabalho com cabelo",
+      "expected": "salao",
+      "detected": "salao",
+      "correct": true,
+      "response": "Detectei que você trabalha com **beleza**. Vou configurar seu funcionário IA especializado em agendamentos e cuidados estéticos."
+    },
+    {
+      "test": 34,
+      "message": "sou cabeleireiro",
+      "expected": "salao",
+      "detected": "advogado",
+      "correct": false,
+      "response": "Detectei que você trabalha com **advocacia**. Vou configurar seu funcionário IA especializado em atendimento jurídico."
+    },
+    {
+      "test": 35,
+      "message": "trabalho com estética",
+      "expected": "estetica",
+      "detected": "salao",
+      "correct": false,
+      "response": "Detectei que você trabalha com **beleza**. Vou configurar seu funcionário IA especializado em agendamentos e cuidados estéticos."
+    },
+    {
+      "test": 36,
+      "message": "faço harmonização",
+      "expected": "estetica",
+      "detected": "estetica",
+      "correct": true,
+      "response": "Detectei que você trabalha com **estetica**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 37,
+      "message": "trabalho com massagem",
+      "expected": "massagem",
+      "detected": "massagem",
+      "correct": true,
+      "response": "Detectei que você trabalha com **massagem**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 38,
+      "message": "tenho uma loja",
+      "expected": "loja",
+      "detected": "loja",
+      "correct": true,
+      "response": "Detectei que você trabalha com **varejo**. Vou configurar seu funcionário IA especializado em vendas e atendimento comercial."
+    },
+    {
+      "test": 39,
+      "message": "trabalho com vendas",
+      "expected": "loja",
+      "detected": "loja",
+      "correct": true,
+      "response": "Detectei que você trabalha com **varejo**. Vou configurar seu funcionário IA especializado em vendas e atendimento comercial."
+    },
+    {
+      "test": 40,
+      "message": "vendo roupas",
+      "expected": "roupas",
+      "detected": "roupas",
+      "correct": true,
+      "response": "Detectei que você trabalha com **roupas**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 41,
+      "message": "trabalho com moda",
+      "expected": "roupas",
+      "detected": "roupas",
+      "correct": true,
+      "response": "Detectei que você trabalha com **roupas**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 42,
+      "message": "vendo calçados",
+      "expected": "calcados",
+      "detected": "calcados",
+      "correct": true,
+      "response": "Detectei que você trabalha com **calcados**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 43,
+      "message": "trabalho com sapatos",
+      "expected": "calcados",
+      "detected": "calcados",
+      "correct": true,
+      "response": "Detectei que você trabalha com **calcados**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 44,
+      "message": "tenho um mercado",
+      "expected": "mercado",
+      "detected": "mercado",
+      "correct": true,
+      "response": "Detectei que você trabalha com **mercado**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 45,
+      "message": "trabalho com supermercado",
+      "expected": "mercado",
+      "detected": "mercado",
+      "correct": true,
+      "response": "Detectei que você trabalha com **mercado**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 46,
+      "message": "tenho uma oficina",
+      "expected": "oficina",
+      "detected": "oficina",
+      "correct": true,
+      "response": "Detectei que você trabalha com **serviços automotivos**. Vou configurar seu funcionário IA especializado em manutenção veicular."
+    },
+    {
+      "test": 47,
+      "message": "trabalho com carros",
+      "expected": "oficina",
+      "detected": "oficina",
+      "correct": true,
+      "response": "Detectei que você trabalha com **serviços automotivos**. Vou configurar seu funcionário IA especializado em manutenção veicular."
+    },
+    {
+      "test": 48,
+      "message": "faço conserto de auto",
+      "expected": "oficina",
+      "detected": "oficina",
+      "correct": true,
+      "response": "Detectei que você trabalha com **serviços automotivos**. Vou configurar seu funcionário IA especializado em manutenção veicular."
+    },
+    {
+      "test": 49,
+      "message": "tenho lava-jato",
+      "expected": "lavacao",
+      "detected": "lavacao",
+      "correct": true,
+      "response": "Detectei que você trabalha com **lavacao**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 50,
+      "message": "trabalho com lavagem",
+      "expected": "lavacao",
+      "detected": "lavacao",
+      "correct": true,
+      "response": "Detectei que você trabalha com **lavacao**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 51,
+      "message": "tenho borracharia",
+      "expected": "borracharia",
+      "detected": "borracharia",
+      "correct": true,
+      "response": "Detectei que você trabalha com **borracharia**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 52,
+      "message": "tenho uma escola",
+      "expected": "escola",
+      "detected": "escola",
+      "correct": true,
+      "response": "Detectei que você trabalha com **escola**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 53,
+      "message": "trabalho com educação",
+      "expected": "escola",
+      "detected": "escola",
+      "correct": true,
+      "response": "Detectei que você trabalha com **escola**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 54,
+      "message": "dou aulas",
+      "expected": "escola",
+      "detected": "escola",
+      "correct": true,
+      "response": "Detectei que você trabalha com **escola**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 55,
+      "message": "tenho cursinho",
+      "expected": "cursinho",
+      "detected": "cursinho",
+      "correct": true,
+      "response": "Detectei que você trabalha com **cursinho**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 56,
+      "message": "trabalho com idiomas",
+      "expected": "idiomas",
+      "detected": "idiomas",
+      "correct": true,
+      "response": "Detectei que você trabalha com **idiomas**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 57,
+      "message": "trabalho com construção",
+      "expected": "construcao",
+      "detected": "arquiteto",
+      "correct": false,
+      "response": "Detectei que você trabalha com **arquiteto**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 58,
+      "message": "sou pedreiro",
+      "expected": "construcao",
+      "detected": "construcao",
+      "correct": true,
+      "response": "Detectei que você trabalha com **construcao**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 59,
+      "message": "trabalho com pintura",
+      "expected": "pintura",
+      "detected": "pintura",
+      "correct": true,
+      "response": "Detectei que você trabalha com **pintura**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 60,
+      "message": "sou eletricista",
+      "expected": "eletricista",
+      "detected": "eletricista",
+      "correct": true,
+      "response": "Detectei que você trabalha com **eletricista**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 61,
+      "message": "sou encanador",
+      "expected": "encanador",
+      "detected": "encanador",
+      "correct": true,
+      "response": "Detectei que você trabalha com **encanador**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 62,
+      "message": "trabalho com marcenaria",
+      "expected": "marcenaria",
+      "detected": "marcenaria",
+      "correct": true,
+      "response": "Detectei que você trabalha com **marcenaria**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 63,
+      "message": "tenho um hotel",
+      "expected": "hotel",
+      "detected": "hotel",
+      "correct": true,
+      "response": "Detectei que você trabalha com **hospedagem**. Vou configurar seu funcionário IA especializado em reservas e turismo."
+    },
+    {
+      "test": 64,
+      "message": "trabalho com hospedagem",
+      "expected": "hotel",
+      "detected": "hotel",
+      "correct": true,
+      "response": "Detectei que você trabalha com **hospedagem**. Vou configurar seu funcionário IA especializado em reservas e turismo."
+    },
+    {
+      "test": 65,
+      "message": "tenho agência de viagens",
+      "expected": "agencia",
+      "detected": "agencia",
+      "correct": true,
+      "response": "Detectei que você trabalha com **agencia**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 66,
+      "message": "trabalho com taxi",
+      "expected": "taxi",
+      "detected": "taxi",
+      "correct": true,
+      "response": "Detectei que você trabalha com **taxi**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 67,
+      "message": "sou motoboy",
+      "expected": "motoboy",
+      "detected": "motoboy",
+      "correct": true,
+      "response": "Detectei que você trabalha com **motoboy**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 68,
+      "message": "trabalho com frete",
+      "expected": "caminhao",
+      "detected": "caminhao",
+      "correct": true,
+      "response": "Detectei que você trabalha com **caminhao**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 69,
+      "message": "trabalho com buffet",
+      "expected": "buffet",
+      "detected": "buffet",
+      "correct": true,
+      "response": "Detectei que você trabalha com **buffet**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 70,
+      "message": "organizo festas",
+      "expected": "buffet",
+      "detected": "buffet",
+      "correct": true,
+      "response": "Detectei que você trabalha com **buffet**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 71,
+      "message": "sou músico",
+      "expected": "musica",
+      "detected": "musica",
+      "correct": true,
+      "response": "Detectei que você trabalha com **musica**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 72,
+      "message": "sou fotógrafo",
+      "expected": "fotografia",
+      "detected": "fotografia",
+      "correct": true,
+      "response": "Detectei que você trabalha com **fotografia**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 73,
+      "message": "trabalho com informática",
+      "expected": "informatica",
+      "detected": "informatica",
+      "correct": true,
+      "response": "Detectei que você trabalha com **informatica**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 74,
+      "message": "sou desenvolvedor",
+      "expected": "desenvolvedor",
+      "detected": "desenvolvedor",
+      "correct": true,
+      "response": "Detectei que você trabalha com **desenvolvedor**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 75,
+      "message": "programo sistemas",
+      "expected": "desenvolvedor",
+      "detected": "desenvolvedor",
+      "correct": true,
+      "response": "Detectei que você trabalha com **desenvolvedor**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 76,
+      "message": "trabalho com agronegócio",
+      "expected": "agronegocio",
+      "detected": "agronegocio",
+      "correct": true,
+      "response": "Detectei que você trabalha com **agronegocio**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 77,
+      "message": "tenho fazenda",
+      "expected": "agronegocio",
+      "detected": "agronegocio",
+      "correct": true,
+      "response": "Detectei que você trabalha com **agronegocio**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 78,
+      "message": "trabalho com limpeza",
+      "expected": "limpeza",
+      "detected": "limpeza",
+      "correct": true,
+      "response": "Detectei que você trabalha com **limpeza**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 79,
+      "message": "tenho lavanderia",
+      "expected": "lavanderia",
+      "detected": "lavanderia",
+      "correct": true,
+      "response": "Detectei que você trabalha com **lavanderia**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 80,
+      "message": "tenho academia",
+      "expected": "academia",
+      "detected": "academia",
+      "correct": true,
+      "response": "Detectei que você trabalha com **academia**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 81,
+      "message": "trabalho com fitness",
+      "expected": "academia",
+      "detected": "academia",
+      "correct": true,
+      "response": "Detectei que você trabalha com **academia**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 82,
+      "message": "tenho igreja",
+      "expected": "igreja",
+      "detected": "igreja",
+      "correct": true,
+      "response": "Detectei que você trabalha com **igreja**. Vou configurar seu funcionário IA especializado nesta área."
+    },
+    {
+      "test": 83,
+      "message": "oi",
+      "expected": null,
+      "detected": null,
+      "correct": true,
+      "response": "Perguntaria: Que tipo de estabelecimento você tem?"
+    },
+    {
+      "test": 84,
+      "message": "olá",
+      "expected": null,
+      "detected": null,
+      "correct": true,
+      "response": "Perguntaria: Que tipo de estabelecimento você tem?"
+    },
+    {
+      "test": 85,
+      "message": "bom dia",
+      "expected": null,
+      "detected": null,
+      "correct": true,
+      "response": "Perguntaria: Que tipo de estabelecimento você tem?"
+    },
+    {
+      "test": 86,
+      "message": "tudo bem?",
+      "expected": null,
+      "detected": null,
+      "correct": true,
+      "response": "Perguntaria: Que tipo de estabelecimento você tem?"
+    },
+    {
+      "test": 87,
+      "message": "preciso de ajuda",
+      "expected": null,
+      "detected": null,
+      "correct": true,
+      "response": "Perguntaria: Que tipo de estabelecimento você tem?"
+    }
+  ],
+  "detected_types": [
+    "lavanderia",
+    "motoboy",
+    "fotografia",
+    "caminhao",
+    "farmacia",
+    "construcao",
+    "informatica",
+    "advogado",
+    "calcados",
+    "marcenaria",
+    "taxi",
+    "loja",
+    "igreja",
+    "hamburgueria",
+    "psicologo",
+    "acai",
+    "academia",
+    "escola",
+    "cursinho",
+    "agencia",
+    "restaurante",
+    "lavacao",
+    "mercado",
+    "dentista",
+    "arquiteto",
+    "buffet",
+    "oficina",
+    "estetica",
+    "engenheiro",
+    "encanador",
+    "idiomas",
+    "agronegocio",
+    "hotel",
+    "desenvolvedor",
+    "fisioterapeuta",
+    "limpeza",
+    "padaria",
+    "musica",
+    "roupas",
+    "salao",
+    "massagem",
+    "medico",
+    "eletricista",
+    "veterinario",
+    "borracharia",
+    "contador",
+    "pintura"
+  ],
+  "summary": {
+    "status": "APROVADO",
+    "recommendation": "Pronto para produção"
+  }
+}

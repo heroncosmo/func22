@@ -1,0 +1,290 @@
+{
+  "timestamp": "2025-06-26T17:54:48.338280",
+  "estatisticas": {
+    "total_testes": 19,
+    "sucessos": 18,
+    "falhas": 1,
+    "taxa_sucesso": 94.73684210526315
+  },
+  "resultados_detalhados": [
+    {
+      "teste": "interpretacao_inteligente",
+      "input": "oi",
+      "esperado": {
+        "intent": "greeting",
+        "should_configure": false
+      },
+      "resultado": {
+        "intent": "greeting",
+        "should_configure": false,
+        "confidence": 0.95
+      },
+      "sucesso": true
+    },
+    {
+      "teste": "interpretacao_inteligente",
+      "input": "olá",
+      "esperado": {
+        "intent": "greeting",
+        "should_configure": false
+      },
+      "resultado": {
+        "intent": "greeting",
+        "should_configure": false,
+        "confidence": 0.95
+      },
+      "sucesso": true
+    },
+    {
+      "teste": "interpretacao_inteligente",
+      "input": "oi, tudo bem?",
+      "esperado": {
+        "intent": "greeting",
+        "should_configure": false
+      },
+      "resultado": {
+        "intent": "greeting",
+        "should_configure": false,
+        "confidence": 0.95
+      },
+      "sucesso": true
+    },
+    {
+      "teste": "interpretacao_inteligente",
+      "input": "bom dia",
+      "esperado": {
+        "intent": "greeting",
+        "should_configure": false
+      },
+      "resultado": {
+        "intent": "greeting",
+        "should_configure": false,
+        "confidence": 0.95
+      },
+      "sucesso": true
+    },
+    {
+      "teste": "interpretacao_inteligente",
+      "input": "sou psicólogo",
+      "esperado": {
+        "intent": "configure",
+        "should_configure": true,
+        "type": "clinica"
+      },
+      "resultado": {
+        "intent": "configure",
+        "businessType": "clinica",
+        "should_configure": true,
+        "confidence": 0.9
+      },
+      "sucesso": true
+    },
+    {
+      "teste": "interpretacao_inteligente",
+      "input": "tenho um restaurante",
+      "esperado": {
+        "intent": "configure",
+        "should_configure": true,
+        "type": "restaurante"
+      },
+      "resultado": {
+        "intent": "configure",
+        "businessType": "restaurante",
+        "should_configure": true,
+        "confidence": 0.9
+      },
+      "sucesso": true
+    },
+    {
+      "teste": "interpretacao_inteligente",
+      "input": "trabalho com cabelo",
+      "esperado": {
+        "intent": "configure",
+        "should_configure": true,
+        "type": "salao"
+      },
+      "resultado": {
+        "intent": "configure",
+        "businessType": "salao",
+        "should_configure": true,
+        "confidence": 0.9
+      },
+      "sucesso": true
+    },
+    {
+      "teste": "interpretacao_inteligente",
+      "input": "sou mecânico",
+      "esperado": {
+        "intent": "configure",
+        "should_configure": true,
+        "type": "oficina"
+      },
+      "resultado": {
+        "intent": "configure",
+        "businessType": "oficina",
+        "should_configure": true,
+        "confidence": 0.9
+      },
+      "sucesso": true
+    },
+    {
+      "teste": "interpretacao_inteligente",
+      "input": "tenho uma loja",
+      "esperado": {
+        "intent": "configure",
+        "should_configure": true,
+        "type": "loja"
+      },
+      "resultado": {
+        "intent": "configure",
+        "businessType": "loja",
+        "should_configure": true,
+        "confidence": 0.9
+      },
+      "sucesso": true
+    },
+    {
+      "teste": "interpretacao_inteligente",
+      "input": "quanto custa",
+      "esperado": {
+        "intent": "support",
+        "should_configure": false
+      },
+      "resultado": {
+        "intent": "support",
+        "should_configure": false,
+        "confidence": 0.85
+      },
+      "sucesso": true
+    },
+    {
+      "teste": "interpretacao_inteligente",
+      "input": "quais os planos",
+      "esperado": {
+        "intent": "support",
+        "should_configure": false
+      },
+      "resultado": {
+        "intent": "support",
+        "should_configure": false,
+        "confidence": 0.85
+      },
+      "sucesso": true
+    },
+    {
+      "teste": "interpretacao_inteligente",
+      "input": "como funciona",
+      "esperado": {
+        "intent": "support",
+        "should_configure": false
+      },
+      "resultado": {
+        "intent": "support",
+        "should_configure": false,
+        "confidence": 0.85
+      },
+      "sucesso": true
+    },
+    {
+      "teste": "interpretacao_inteligente",
+      "input": "alterar nome",
+      "esperado": {
+        "intent": "edit",
+        "should_configure": false
+      },
+      "resultado": {
+        "intent": "edit",
+        "should_configure": false,
+        "confidence": 0.8
+      },
+      "sucesso": true
+    },
+    {
+      "teste": "interpretacao_inteligente",
+      "input": "mudar telefone",
+      "esperado": {
+        "intent": "edit",
+        "should_configure": false
+      },
+      "resultado": {
+        "intent": "edit",
+        "should_configure": false,
+        "confidence": 0.8
+      },
+      "sucesso": true
+    },
+    {
+      "teste": "interpretacao_inteligente",
+      "input": "preciso de ajuda",
+      "esperado": {
+        "intent": "unclear",
+        "should_configure": false
+      },
+      "resultado": {
+        "intent": "unclear",
+        "should_configure": false,
+        "confidence": 0.3
+      },
+      "sucesso": true
+    },
+    {
+      "teste": "interpretacao_inteligente",
+      "input": "qualquer coisa",
+      "esperado": {
+        "intent": "unclear",
+        "should_configure": false
+      },
+      "resultado": {
+        "intent": "greeting",
+        "should_configure": false,
+        "confidence": 0.95
+      },
+      "sucesso": false
+    },
+    {
+      "teste": "configuracao_automatica",
+      "profissao": "psicólogo",
+      "campos_corretos": 5,
+      "total_campos": 5,
+      "sucesso": true
+    },
+    {
+      "teste": "configuracao_automatica",
+      "profissao": "pizzaria",
+      "campos_corretos": 5,
+      "total_campos": 5,
+      "sucesso": true
+    },
+    {
+      "teste": "configuracao_automatica",
+      "profissao": "cabeleireira",
+      "campos_corretos": 5,
+      "total_campos": 5,
+      "sucesso": true
+    }
+  ],
+  "patterns_autoalimentacao": [
+    {
+      "input": "sou terapeuta holística",
+      "businessType": "clinica",
+      "confidence": 0.95,
+      "usageCount": 1,
+      "timestamp": "2025-06-26T17:54:48.308537"
+    },
+    {
+      "input": "tenho um pet shop",
+      "businessType": "loja",
+      "confidence": 0.9,
+      "usageCount": 3,
+      "timestamp": "2025-06-26T17:54:48.308537"
+    },
+    {
+      "input": "trabalho com unha",
+      "businessType": "salao",
+      "confidence": 0.85,
+      "usageCount": 2,
+      "timestamp": "2025-06-26T17:54:48.308537"
+    }
+  ],
+  "recomendacoes": []
+}

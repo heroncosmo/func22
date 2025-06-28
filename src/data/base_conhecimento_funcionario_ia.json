@@ -1,0 +1,235 @@
+{
+  "sistema": {
+    "nome": "FuncionarioPro",
+    "descricao": "Sistema de automação que cria atendentes virtuais para responder clientes 24h no WhatsApp com respostas humanas",
+    "versao": "2.0",
+    "url": "https://funcionariopro.com"
+  },
+  
+  "o_que_faz": {
+    "principal": "Cria um atendente virtual premium que responde seus clientes no WhatsApp com respostas humanas, 24 horas por dia",
+    "funcionalidades": [
+      "Atendimento automático 24h no WhatsApp",
+      "Agendamento automático de consultas e serviços",
+      "Respostas naturais e humanizadas",
+      "Recebe pedidos e encomendas automaticamente",
+      "Informa preços, horários e disponibilidade",
+      "Converte visitantes em vendas",
+      "Nunca perde um cliente por falta de atendimento",
+      "Trabalha enquanto você dorme ou está ocupado"
+    ]
+  },
+
+  "beneficios": {
+    "para_negocio": [
+      "Aumenta vendas em até 300%",
+      "Nunca perde um cliente por falta de atendimento",
+      "Reduz tempo gasto com atendimento básico",
+      "Agenda automaticamente consultas e serviços",
+      "Funciona 24h, 7 dias por semana",
+      "Responde na velocidade que o cliente espera",
+      "Filtra apenas clientes realmente interessados"
+    ],
+    "para_cliente": [
+      "Atendimento instantâneo a qualquer hora",
+      "Informações sempre atualizadas",
+      "Agendamento simples e rápido",
+      "Sem espera para informações básicas"
+    ]
+  },
+
+  "planos_precos": {
+    "gratuito": {
+      "nome": "Plano Teste",
+      "preco": "R$ 0,00",
+      "periodo": "7 dias",
+      "limitacoes": [
+        "Máximo 50 mensagens por dia",
+        "Apenas 1 funcionário virtual",
+        "Suporte básico por email",
+        "Sem personalização avançada"
+      ],
+      "ideal_para": "Testar o sistema antes de assinar"
+    },
+    "mensal": {
+      "nome": "Plano Mensal",
+      "preco": "R$ 49,90",
+      "periodo": "por mês",
+      "beneficios": [
+        "Mensagens ilimitadas",
+        "Até 3 funcionários virtuais",
+        "Personalização completa",
+        "Relatórios detalhados",
+        "Suporte prioritário por WhatsApp",
+        "Integração com redes sociais",
+        "Backup automático das conversas",
+        "Sem limite de clientes atendidos"
+      ],
+      "ideal_para": "Pequenos e médios negócios"
+    },
+    "anual": {
+      "nome": "Plano Anual (12 meses)",
+      "preco": "R$ 499,00",
+      "periodo": "12 meses",
+      "preco_mensal_equivalente": "R$ 41,58/mês",
+      "economia": "R$ 99,00",
+      "beneficios": [
+        "Tudo do Plano Mensal",
+        "2 meses grátis (economia de R$ 99,80)",
+        "Desconto especial de 16,7%",
+        "Atendentes virtuais ilimitados",
+        "Suporte técnico prioritário",
+        "Treinamento personalizado incluído",
+        "Relatórios avançados",
+        "Integrações premium"
+      ],
+      "ideal_para": "Negócios que querem economia e recursos avançados"
+    }
+  },
+
+  "tipos_negocio": {
+    "clinica": {
+      "profissoes": ["psicólogo", "médico", "dentista", "advogado", "contador", "terapeuta", "fisioterapeuta", "nutricionista", "coach", "consultório"],
+      "configuracao_padrao": {
+        "horarios": "Segunda a Sexta: 08:00 às 18:00",
+        "servicos": "Consultas, Avaliações, Terapias e Atendimentos",
+        "pagamentos": "PIX, Cartão de Crédito/Débito, Convênios",
+        "agendamento": true,
+        "delivery": false
+      },
+      "exemplos_uso": [
+        "Agendar consultas automaticamente",
+        "Confirmar horários com pacientes",
+        "Informar valores e convênios aceitos",
+        "Enviar lembretes de consultas",
+        "Responder dúvidas sobre tratamentos"
+      ]
+    },
+    "restaurante": {
+      "profissoes": ["restaurante", "pizzaria", "lanchonete", "delivery", "chef", "cozinheiro", "food truck", "comida"],
+      "configuracao_padrao": {
+        "horarios": "Todos os dias: 11:00 às 23:00",
+        "servicos": "Pratos Executivos, Pizzas, Lanches, Bebidas",
+        "pagamentos": "PIX, Cartão, Dinheiro",
+        "agendamento": false,
+        "delivery": true
+      },
+      "exemplos_uso": [
+        "Receber pedidos pelo WhatsApp",
+        "Informar cardápio e preços",
+        "Calcular taxa de entrega",
+        "Confirmar endereço de entrega",
+        "Informar tempo de preparo"
+      ]
+    },
+    "salao": {
+      "profissoes": ["cabeleireiro", "cabeleireira", "manicure", "pedicure", "esteticista", "barbeiro", "depilação", "massagem", "salao", "beleza"],
+      "configuracao_padrao": {
+        "horarios": "Terça a Sábado: 09:00 às 19:00",
+        "servicos": "Cortes, Coloração, Manicure, Pedicure, Tratamentos",
+        "pagamentos": "PIX, Cartão, Dinheiro",
+        "agendamento": true,
+        "delivery": false
+      },
+      "exemplos_uso": [
+        "Agendar horários de beleza",
+        "Informar preços dos serviços",
+        "Confirmar disponibilidade",
+        "Enviar fotos de trabalhos realizados",
+        "Lembrar de retorno para manutenção"
+      ]
+    },
+    "oficina": {
+      "profissoes": ["mecânico", "oficina", "eletricista", "encanador", "conserto", "manutenção", "técnico", "reparos"],
+      "configuracao_padrao": {
+        "horarios": "Segunda a Sexta: 08:00 às 18:00",
+        "servicos": "Manutenção, Reparos, Consertos, Diagnósticos",
+        "pagamentos": "PIX, Cartão, Dinheiro",
+        "agendamento": true,
+        "delivery": false
+      },
+      "exemplos_uso": [
+        "Agendar revisões e reparos",
+        "Fazer orçamentos iniciais",
+        "Informar disponibilidade de peças",
+        "Acompanhar status do serviço",
+        "Enviar fotos do problema"
+      ]
+    },
+    "loja": {
+      "profissoes": ["loja", "comércio", "vendas", "pet shop", "farmácia", "mercado", "produtos", "varejo"],
+      "configuracao_padrao": {
+        "horarios": "Segunda a Sexta: 09:00 às 18:00, Sábado: 09:00 às 14:00",
+        "servicos": "Vendas de Produtos, Atendimento ao Cliente",
+        "pagamentos": "PIX, Cartão, Dinheiro",
+        "agendamento": false,
+        "delivery": true
+      },
+      "exemplos_uso": [
+        "Informar produtos disponíveis",
+        "Calcular frete de entrega",
+        "Processar pedidos online",
+        "Informar promoções vigentes",
+        "Agendar retirada na loja"
+      ]
+    }
+  },
+
+  "como_funciona": {
+    "passo_1": "Você configura seu funcionário virtual com as informações do seu negócio",
+    "passo_2": "Conectamos ele ao seu WhatsApp Web",
+    "passo_3": "Seus clientes começam a ser atendidos automaticamente 24h",
+    "passo_4": "Você acompanha tudo pelo dashboard e recebe relatórios",
+    "tecnologia": "Sistema de automação inteligente que gera respostas humanas personalizadas"
+  },
+
+  "integracoes": {
+    "whatsapp_business": "Conexão com o Whatsapp Web",
+    "redes_sociais": "Instagram, Facebook, site próprio",
+    "pagamentos": "Mercado Pago, PagSeguro, PayPal",
+    "agendamento": "Google Calendar, calendários próprios",
+    "crm": "RD Station, HubSpot, Pipedrive"
+  },
+
+  "suporte": {
+    "whatsapp": "+55 11 3230-0474",
+    "link_whatsapp": "https://wa.me/551132300474?text=Olá%2C%20preciso%20de%20ajuda%20com%20o%20FuncionarioPro",
+    "horario_atendimento": "Segunda a Sexta: 08:00 às 18:00",
+    "canais": ["WhatsApp +55 11 3230-0474", "Email", "Chat no site"],
+    "tempo_resposta": "Até 2 horas em horário comercial",
+    "documentacao": "Base de conhecimento completa online",
+    "video_tutoriais": "Canal no YouTube com tutoriais passo a passo",
+    "especialidades": [
+      "Configuração inicial do sistema",
+      "Conexão com WhatsApp Web",
+      "Personalização de respostas",
+      "Dúvidas sobre planos e preços",
+      "Problemas técnicos",
+      "Consultoria para otimização"
+    ]
+  },
+
+  "casos_sucesso": {
+    "clinica_psicologia": "Clínica aumentou agendamentos em 250% e reduziu no-shows para apenas 5%",
+    "pizzaria": "Pizzaria triplicou pedidos noturnos e finais de semana",
+    "salao_beleza": "Salão otimizou agenda e aumentou faturamento em 180%",
+    "oficina_mecanica": "Oficina organizou demanda e melhorou satisfação dos clientes"
+  },
+
+  "diferenciais": [
+    "Única IA que realmente entende seu tipo de negócio",
+    "Configuração automática baseada na sua profissão",
+    "Aprende continuamente com as interações",
+    "Interface simples como WhatsApp pessoal",
+    "Suporte em português com equipe brasileira",
+    "Sem contratos de fidelidade",
+    "Teste grátis por 7 dias sem compromisso"
+  ],
+
+  "seguranca_privacidade": {
+    "lgpd_compliance": "100% em conformidade com a LGPD",
+    "criptografia": "Todas as mensagens são criptografadas",
+    "backup": "Backup automático e seguro dos dados",
+    "privacidade": "Seus dados nunca são compartilhados"
+  }
+} 

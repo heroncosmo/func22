@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -8,80 +7,36 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { AgentData } from './AgentBuilder';
 import { Store, Coffee, Car, Heart, Briefcase, Home, Utensils, ShoppingBag } from 'lucide-react';
+import baseKnowledge from '@/data/base_conhecimento_funcionario_ia.json';
 
 interface AgentConfigProps {
   agentData: AgentData;
   onUpdate: (data: Partial<AgentData>) => void;
 }
 
-const businessTemplates = [
-  {
-    id: 'restaurante',
-    name: 'Restaurante',
-    icon: Utensils,
-    color: 'from-orange-400 to-red-500',
-    prompt: 'Você é um atendente virtual de restaurante. Seja amigável, ajude com o cardápio, aceite pedidos e forneça informações sobre horários e localização.',
-    info: 'Restaurante familiar com pratos caseiros e ambiente acolhedor. Funcionamos de terça a domingo das 11h às 22h.'
-  },
-  {
-    id: 'loja',
-    name: 'Loja',
-    icon: ShoppingBag,
-    color: 'from-blue-400 to-purple-500',
-    prompt: 'Você é um vendedor virtual. Seja prestativo, ajude os clientes a encontrar produtos, esclareça dúvidas sobre preços e disponibilidade.',
-    info: 'Loja com variedade de produtos de qualidade. Trabalhamos com as melhores marcas e oferecemos ótimo atendimento.'
-  },
-  {
-    id: 'clinica',
-    name: 'Clínica',
-    icon: Heart,
-    color: 'from-green-400 to-teal-500',
-    prompt: 'Você é um assistente de clínica médica. Seja profissional e cuidadoso, ajude com agendamentos, informações sobre procedimentos e horários.',
-    info: 'Clínica médica com profissionais qualificados. Oferecemos consultas e exames com qualidade e cuidado.'
-  },
-  {
-    id: 'hotel',
-    name: 'Hotel',
-    icon: Home,
-    color: 'from-indigo-400 to-blue-500',
-    prompt: 'Você é um concierge virtual. Seja hospitaleiro, ajude com reservas, informações sobre acomodações e serviços do hotel.',
-    info: 'Hotel confortável com excelente localização. Oferecemos quartos bem equipados e serviços de qualidade.'
-  },
-  {
-    id: 'oficina',
-    name: 'Oficina',
-    icon: Car,
-    color: 'from-gray-400 to-slate-500',
-    prompt: 'Você é um atendente de oficina mecânica. Seja direto e técnico quando necessário, ajude com orçamentos e agendamentos de serviços.',
-    info: 'Oficina especializada em reparos automotivos. Equipe experiente e peças de qualidade garantida.'
-  },
-  {
-    id: 'escritorio',
-    name: 'Escritório',
-    icon: Briefcase,
-    color: 'from-slate-400 to-gray-600',
-    prompt: 'Você é um assistente de escritório. Seja formal e eficiente, ajude com agendamentos, informações sobre serviços e contatos.',
-    info: 'Escritório profissional oferecendo serviços especializados. Atendimento de qualidade e soluções personalizadas.'
-  }
-];
-
-const personalities = [
-  { id: 'amigavel', name: 'Amigável e Caloroso', description: 'Tom descontraído e acolhedor' },
-  { id: 'profissional', name: 'Profissional', description: 'Formal e respeitoso' },
-  { id: 'divertido', name: 'Divertido e Descontraído', description: 'Uso de emojis e linguagem casual' },
-  { id: 'tecnico', name: 'Técnico e Direto', description: 'Foco em informações precisas' },
-  { id: 'vendedor', name: 'Persuasivo', description: 'Focado em vendas e conversão' }
-];
-
 const AgentConfig: React.FC<AgentConfigProps> = ({ agentData, onUpdate }) => {
-  const handleTemplateSelect = (templateId: string) => {
-    const template = businessTemplates.find(t => t.id === templateId);
-    if (template) {
+  const businessTypes = Object.entries(baseKnowledge.tipos_negocio).map(([key, value]) => ({
+    value: key,
+    label: key.charAt(0).toUpperCase() + key.slice(1),
+    profissoes: (value as any).profissoes
+  }));
+
+  const handleBusinessTypeChange = (value: string) => {
+    const businessType = baseKnowledge.tipos_negocio[value as keyof typeof baseKnowledge.tipos_negocio];
+    if (businessType) {
+      const config = businessType.configuracao_padrao;
+      const info = `
+Horários: ${config.horarios}
+Serviços: ${config.servicos}
+Formas de Pagamento: ${config.pagamentos}
+${config.agendamento ? '✓ Aceita Agendamentos' : '✗ Não Aceita Agendamentos'}
+${config.delivery ? '✓ Faz Delivery' : '✗ Não Faz Delivery'}
+      `.trim();
+
       onUpdate({
-        template: templateId,
-        businessType: template.name.toLowerCase(),
-        businessInfo: template.info,
-        welcomeMessage: `Olá! Bem-vindo ao nosso ${template.name.toLowerCase()}! Como posso ajudá-lo hoje?`
+        businessType: value,
+        businessInfo: info,
+        template: value
       });
     }
   };
@@ -98,26 +53,25 @@ const AgentConfig: React.FC<AgentConfigProps> = ({ agentData, onUpdate }) => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 gap-3">
-            {businessTemplates.map((template) => {
-              const Icon = template.icon;
+            {businessTypes.map((type) => {
               return (
                 <button
-                  key={template.id}
-                  onClick={() => handleTemplateSelect(template.id)}
+                  key={type.value}
+                  onClick={() => handleBusinessTypeChange(type.value)}
                   className={`p-4 rounded-xl border-2 transition-all hover:scale-105 ${
-                    agentData.template === template.id
+                    agentData.businessType === type.value
                       ? 'border-purple-500 bg-purple-50'
                       : 'border-gray-200 hover:border-purple-300'
                   }`}
                 >
-                  <div className={`inline-flex p-2 rounded-lg bg-gradient-to-r ${template.color} mb-2`}>
-                    <Icon className="h-5 w-5 text-white" />
-                  </div>
-                  <div className="text-sm font-medium text-gray-900">{template.name}</div>
+                  <div className="text-sm font-medium text-gray-900">{type.label}</div>
                 </button>
               );
             })}
           </div>
+          <p className="text-xs text-gray-500">
+            Profissões relacionadas: {businessTypes.find(t => t.value === agentData.businessType)?.profissoes.join(', ')}
+          </p>
         </CardContent>
       </Card>
 
@@ -162,14 +116,11 @@ const AgentConfig: React.FC<AgentConfigProps> = ({ agentData, onUpdate }) => {
               <SelectValue placeholder="Escolha a personalidade" />
             </SelectTrigger>
             <SelectContent>
-              {personalities.map((personality) => (
-                <SelectItem key={personality.id} value={personality.id}>
-                  <div>
-                    <div className="font-medium">{personality.name}</div>
-                    <div className="text-sm text-gray-500">{personality.description}</div>
-                  </div>
-                </SelectItem>
-              ))}
+              <SelectItem value="amigavel">Amigável e Acolhedor</SelectItem>
+              <SelectItem value="profissional">Profissional e Formal</SelectItem>
+              <SelectItem value="divertido">Divertido e Descontraído</SelectItem>
+              <SelectItem value="tecnico">Técnico e Direto</SelectItem>
+              <SelectItem value="vendedor">Vendedor e Persuasivo</SelectItem>
             </SelectContent>
           </Select>
         </CardContent>

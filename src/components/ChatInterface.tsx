@@ -1,10 +1,10 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Send, Bot, User, MessageCircle } from 'lucide-react';
+import { Send, Bot, User, ArrowUp } from 'lucide-react';
 import { AgentData } from './AgentBuilder';
 import { useToast } from '@/hooks/use-toast';
+import baseKnowledge from '@/data/base_conhecimento_funcionario_ia.json';
 
 interface Message {
   id: string;
@@ -50,10 +50,24 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ agentData }) => {
       'vendedor': 'Seja persuasivo e focado em destacar benefícios. Conduza a conversa para fechar vendas ou agendamentos.'
     };
 
+    const businessType = baseKnowledge.tipos_negocio[agentData.businessType as keyof typeof baseKnowledge.tipos_negocio];
+    const businessConfig = businessType?.configuracao_padrao || {};
+    const businessExamples = businessType?.exemplos_uso || [];
+
     return `Você é um assistente virtual do ${agentData.businessName}.
 
 INFORMAÇÕES DO NEGÓCIO:
 ${agentData.businessInfo}
+
+CONFIGURAÇÃO PADRÃO:
+Horários: ${businessConfig.horarios || 'Não definido'}
+Serviços: ${businessConfig.servicos || 'Não definido'}
+Formas de Pagamento: ${businessConfig.pagamentos || 'Não definido'}
+${businessConfig.agendamento ? '✓ Aceita Agendamentos' : '✗ Não Aceita Agendamentos'}
+${businessConfig.delivery ? '✓ Faz Delivery' : '✗ Não Faz Delivery'}
+
+EXEMPLOS DE USO:
+${businessExamples.map(ex => `- ${ex}`).join('\n')}
 
 PERSONALIDADE:
 ${personalityMap[agentData.personality as keyof typeof personalityMap]}
@@ -96,13 +110,13 @@ Responda de forma natural e conversacional.`;
           'Authorization': 'Bearer OOf5YOgTZDgiyxTu0oBAdWT9NYKA8gqe'
         },
         body: JSON.stringify({
-          model: 'mistral-small-latest',
+          model: 'mistral-large-2411',
           messages: [
             { role: 'system', content: buildSystemPrompt() },
             ...conversationHistory,
             { role: 'user', content: inputMessage.trim() }
           ],
-          max_tokens: 500,
+          max_tokens: 1000,
           temperature: 0.7
         })
       });
@@ -151,117 +165,112 @@ Responda de forma natural e conversacional.`;
     }
   };
 
-  const clearChat = () => {
-    setMessages([{
-      id: '1',
-      content: agentData.welcomeMessage,
-      sender: 'agent',
-      timestamp: new Date()
-    }]);
-  };
-
   return (
-    <div className="flex flex-col h-full">
-      {/* Chat Header */}
-      <div className="p-4 border-b bg-gray-50">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full flex items-center justify-center">
-              <Bot className="h-6 w-6 text-white" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900">{agentData.businessName || 'Seu Agente'}</h3>
-              <p className="text-sm text-gray-500">Assistente Virtual</p>
-            </div>
-          </div>
-          <Button variant="outline" size="sm" onClick={clearChat}>
-            Limpar Chat
-          </Button>
-        </div>
-      </div>
-
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-          >
-            <div className={`flex items-start space-x-2 max-w-xs lg:max-w-md`}>
-              {message.sender === 'agent' && (
-                <div className="w-8 h-8 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Bot className="h-4 w-4 text-white" />
-                </div>
-              )}
-              <div
-                className={`px-4 py-3 rounded-2xl ${
-                  message.sender === 'user'
-                    ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white'
-                    : 'bg-white text-gray-900 shadow-sm border'
-                }`}
-              >
-                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                <p className={`text-xs mt-1 ${
-                  message.sender === 'user' ? 'text-blue-100' : 'text-gray-400'
-                }`}>
-                  {message.timestamp.toLocaleTimeString('pt-BR', { 
-                    hour: '2-digit', 
-                    minute: '2-digit' 
-                  })}
-                </p>
-              </div>
-              {message.sender === 'user' && (
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
-                  <User className="h-4 w-4 text-white" />
-                </div>
-              )}
+    <div className="flex flex-col h-full bg-white">
+      {/* Área de Mensagens - Minimalista */}
+      <div className="flex-1 overflow-y-auto">
+        {messages.length === 0 ? (
+          /* Estado Inicial - Foco no Input */
+          <div className="h-full flex flex-col items-center justify-center px-4">
+            <div className="max-w-2xl w-full text-center mb-8">
+              <h1 className="text-3xl font-light text-gray-800 mb-2">
+                {agentData.businessName || 'FuncionarioPro'}
+              </h1>
+              <p className="text-gray-500 text-base">
+                Como posso ajudá-lo hoje?
+              </p>
             </div>
           </div>
-        ))}
-
-        {/* Typing Indicator */}
-        {isLoading && (
-          <div className="flex justify-start">
-            <div className="flex items-start space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full flex items-center justify-center">
-                <Bot className="h-4 w-4 text-white" />
-              </div>
-              <div className="bg-white px-4 py-3 rounded-2xl shadow-sm border">
-                <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+        ) : (
+          /* Mensagens */
+          <div className="max-w-3xl mx-auto px-4 py-8">
+            {messages.map((message) => (
+              <div key={message.id} className="mb-6 group">
+                <div className="flex items-start space-x-4">
+                  {/* Avatar */}
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    {message.sender === 'agent' ? (
+                      <div className="w-7 h-7 bg-emerald-500 rounded-full flex items-center justify-center">
+                        <Bot className="h-4 w-4 text-white" />
+                      </div>
+                    ) : (
+                      <div className="w-7 h-7 bg-gray-700 rounded-full flex items-center justify-center">
+                        <User className="h-4 w-4 text-white" />
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Conteúdo da Mensagem */}
+                  <div className="flex-1 min-w-0">
+                    <div className="prose prose-sm max-w-none">
+                      <p className="text-gray-800 text-base leading-relaxed whitespace-pre-wrap">
+                        {message.content}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+            ))}
+
+            {/* Indicador de Digitação */}
+            {isLoading && (
+              <div className="mb-6">
+                <div className="flex items-start space-x-4">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <div className="w-7 h-7 bg-emerald-500 rounded-full flex items-center justify-center">
+                      <Bot className="h-4 w-4 text-white" />
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-1 text-gray-500">
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div ref={messagesEndRef} />
           </div>
         )}
-
-        <div ref={messagesEndRef} />
       </div>
 
-      {/* Input */}
-      <div className="p-4 border-t bg-white">
-        <div className="flex space-x-2">
-          <Input
-            value={inputMessage}
-            onChange={(e) => setInputMessage(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="Digite sua mensagem..."
-            disabled={isLoading}
-            className="flex-1"
-          />
-          <Button
-            onClick={sendMessage}
-            disabled={isLoading || !inputMessage.trim()}
-            className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
-          >
-            <Send className="h-4 w-4" />
-          </Button>
+      {/* Campo de Input - Destaque Principal */}
+      <div className="border-t border-gray-200 bg-white">
+        <div className="max-w-3xl mx-auto px-4 py-4">
+          <div className="relative">
+            <input
+              type="text"
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Envie uma mensagem..."
+              disabled={isLoading}
+              className="w-full px-4 py-3 pr-12 bg-gray-50 border border-gray-200 rounded-full 
+                         text-base text-gray-900 placeholder-gray-500
+                         focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent
+                         disabled:opacity-50 disabled:cursor-not-allowed
+                         transition-all duration-200"
+              style={{ 
+                fontSize: '16px',
+                fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+              }}
+            />
+            <button
+              onClick={sendMessage}
+              disabled={isLoading || !inputMessage.trim()}
+              className="absolute right-2 top-1/2 -translate-y-1/2 
+                         w-8 h-8 bg-gray-800 rounded-full 
+                         flex items-center justify-center
+                         hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed
+                         transition-all duration-200"
+            >
+              <ArrowUp className="h-4 w-4 text-white" />
+            </button>
+          </div>
         </div>
-        <p className="text-xs text-gray-500 mt-2 text-center">
-          💡 Teste diferentes perguntas para calibrar seu agente
-        </p>
       </div>
     </div>
   );
