@@ -161,12 +161,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartChat, onTemplateSelect
       {/* Hero Section - 100vh sem scroll */}
       <section className="min-h-screen flex flex-col justify-center items-center px-4 md:px-6 pt-16 md:pt-20">
         <div className="text-center w-full max-w-5xl mx-auto">
-          {/* Badge de destaque */}
-          <div className="inline-flex items-center gap-1.5 md:gap-2 bg-gray-100 px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm text-gray-700 mb-6 md:mb-8">
-            <Zap className="w-3.5 h-3.5 md:w-4 md:h-4" />
-            <span>Atendimento 24h automático no WhatsApp</span>
-          </div>
-
           {/* Título principal */}
           <h1 className="text-3xl sm:text-4xl md:text-7xl font-bold text-gray-900 mb-4 md:mb-6 leading-tight px-2">
             Crie seu{' '}
@@ -175,22 +169,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartChat, onTemplateSelect
             </span>
           </h1>
           
-          {/* Subtítulo */}
-          <p className="text-lg sm:text-xl md:text-2xl text-gray-600 mb-4 max-w-4xl mx-auto leading-relaxed px-2">
-            Atendente virtual que responde clientes, agenda automaticamente e <strong>aumenta suas vendas 24h</strong> no WhatsApp
+          {/* Subtítulo melhorado */}
+          <p className="text-lg sm:text-xl md:text-2xl text-gray-600 mb-8 md:mb-12 max-w-4xl mx-auto leading-relaxed px-2">
+            Atendimento humanizado com inteligência artificial que responde clientes, agenda automaticamente e <strong>aumenta suas vendas 24h</strong> no WhatsApp
           </p>
-
-          {/* Prova social rápida */}
-          <div className="flex items-center justify-center gap-2 sm:gap-4 md:gap-6 text-xs md:text-sm text-gray-500 mb-8 md:mb-12">
-            <div className="flex items-center gap-1">
-              <Star className="w-3.5 h-3.5 md:w-4 md:h-4 fill-yellow-400 text-yellow-400" />
-              <span>4.9/5 em avaliações</span>
-            </div>
-            <span className="inline text-gray-300">•</span>
-            <span>+2.000 negócios automatizados</span>
-            <span className="inline text-gray-300">•</span>
-            <span>300% mais vendas em média</span>
-          </div>
 
           {/* Input principal gigante */}
           <div className="w-full max-w-4xl mx-auto mb-6 md:mb-8 px-2">
@@ -231,28 +213,26 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartChat, onTemplateSelect
             </div>
           </div>
 
-          {/* Modelos rápidos */}
-          <div className="flex flex-wrap justify-center gap-1.5 md:gap-2 mb-6 md:mb-8 px-2">
-            {Object.entries(TEMPLATES).slice(0, 6).map(([key, template]) => (
-              <button
-                key={key}
-                onClick={() => handleTemplateSelect(key)}
-                className="inline-flex items-center gap-1.5 md:gap-2 px-2.5 md:px-3 py-1.5 md:py-2 bg-gray-100 hover:bg-gray-200 
-                  rounded-lg text-xs md:text-sm text-gray-700 transition-colors"
-              >
-                <span>{template.icon}</span>
-                <span>{template.title}</span>
-              </button>
-            ))}
-          </div>
-
-          {/* CTA secundário */}
-          <p className="text-xs md:text-sm text-gray-500 px-4">
-            Configure em 2 minutos • Teste grátis por 7 dias • 
-            <a href="https://wa.me/551132300474" className="text-black hover:underline ml-1">
+          {/* Menu sutil na parte inferior */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-xs md:text-sm text-gray-500 px-4">
+            <button
+              onClick={() => onStartChat("Quero criar meu FuncionárioPro")}
+              className="text-black hover:text-gray-700 font-medium hover:underline transition-colors"
+            >
+              Criar meu FuncionárioPro
+            </button>
+            
+            <span className="hidden sm:block text-gray-300">•</span>
+            <span>Configure em 2 minutos</span>
+            
+            <span className="hidden sm:block text-gray-300">•</span>
+            <span>Teste grátis por 7 dias</span>
+            
+            <span className="hidden sm:block text-gray-300">•</span>
+            <a href="https://wa.me/551132300474" className="text-black hover:text-gray-700 hover:underline transition-colors">
               Precisa de ajuda?
             </a>
-          </p>
+          </div>
         </div>
 
         {/* Scroll indicator */}
