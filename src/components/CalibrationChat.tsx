@@ -596,28 +596,12 @@ O que gostaria de fazer agora?`,
       {/* Header Minimalista */}
       <div className="text-center mb-12 max-w-4xl mx-auto">
         <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-          Crie seu <span className="text-black">FuncionarioPro</span>
+          Crie seu <span className="text-black">FuncionárioPro</span>
         </h1>
         <p className="text-lg md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed">
-          Atendente virtual que responde clientes, agenda automaticamente e aumenta vendas 24h no WhatsApp
+          Atendimento humanizado inteligente e automático que responde clientes, agenda e aumenta suas vendas 24h no WhatsApp
         </p>
-        
-        {/* Selos Pequenos */}
-        <div className="flex justify-center items-center gap-8 text-sm text-gray-500 mb-16">
-          <span className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-black rounded-full"></div>
-            100% Personalizado
-          </span>
-          <span className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-black rounded-full"></div>
-            Respostas Humanas
-          </span>
-          <span className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-black rounded-full"></div>
-            Mais Vendas
-          </span>
-          </div>
-        </div>
+      </div>
 
       {/* INPUT GIGANTE CENTRALIZADO ESTILO LOVABLE */}
       <div className="w-full max-w-5xl mb-12">
@@ -661,31 +645,8 @@ O que gostaria de fazer agora?`,
         </div>
       </div>
 
-      {/* Modelos Pequenos - Quase Imperceptíveis */}
-      <div className="w-full max-w-4xl mb-8">
-        <p className="text-center text-sm text-gray-400 mb-4 font-medium">
-          Ou escolha um modelo:
-        </p>
-        <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 gap-3">
-          {Object.entries(TEMPLATES).map(([key, template]) => (
-            <button
-              key={key}
-              onClick={() => applyTemplate(key)}
-              className="flex flex-col items-center gap-1 p-3 rounded-xl hover:bg-gray-50 transition-all text-center group"
-            >
-              <div className="text-lg group-hover:scale-110 transition-transform opacity-70">
-                {template.icon}
-              </div>
-              <span className="text-xs text-gray-500 font-medium leading-tight">
-                {template.title}
-              </span>
-            </button>
-          ))}
-        </div>
-        </div>
-
-      {/* Ações Discretas */}
-      <div className="flex flex-col sm:flex-row items-center gap-6 text-sm text-gray-400">
+      {/* Menu Sutil Inferior */}
+      <div className="flex flex-col sm:flex-row items-center gap-3 md:gap-6 text-sm text-gray-400">
         <button
           onClick={() => {
             setShowTemplates(false);
@@ -711,21 +672,76 @@ O que gostaria de fazer agora?`,
               showConfigStep(0, defaultData);
             }, 1000);
           }}
-          className="hover:text-gray-600 underline transition-colors"
+          className="hover:text-gray-600 underline transition-colors font-medium"
         >
-          Configuração personalizada
+          Criar meu FuncionárioPro
         </button>
         
-        <span className="hidden sm:block">•</span>
+        <span className="hidden sm:inline text-gray-300">•</span>
+        
+        <span className="hover:text-gray-600 transition-colors">Configure em 2 minutos</span>
+        
+        <span className="hidden sm:inline text-gray-300">•</span>
+        
+        <span className="hover:text-gray-600 transition-colors">Teste grátis por 7 dias</span>
+        
+        <span className="hidden sm:inline text-gray-300">•</span>
         
         <a
-          href="https://wa.me/551132300474?text=Olá%2C%20preciso%20de%20ajuda%20com%20o%20FuncionarioPro"
+          href="https://wa.me/551132300474?text=Olá%2C%20preciso%20de%20ajuda%20com%20o%20FuncionárioPro"
           target="_blank"
           rel="noopener noreferrer"
           className="hover:text-gray-600 underline transition-colors"
         >
           Precisa de ajuda?
         </a>
+      </div>
+
+      {/* Seção Informativa - Mais Abaixo */}
+      <div className="mt-24 w-full max-w-6xl space-y-16">
+        {/* Badge de Benefício */}
+        <div className="text-center">
+          <div className="inline-flex items-center gap-1.5 md:gap-2 bg-gray-100 px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm text-gray-700">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5 md:w-4 md:h-4">
+              <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
+            </svg>
+            <span>Atendimento 24h automático no WhatsApp</span>
+          </div>
+        </div>
+
+        {/* Estatísticas */}
+        <div className="flex items-center justify-center gap-2 sm:gap-4 md:gap-6 text-xs md:text-sm text-gray-500">
+          <div className="flex items-center gap-1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5 md:w-4 md:h-4 fill-yellow-400 text-yellow-400">
+              <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
+            </svg>
+            <span>4.9/5 em avaliações</span>
+          </div>
+          <span className="inline text-gray-300">•</span>
+          <span>+2.000 negócios automatizados</span>
+          <span className="inline text-gray-300">•</span>
+          <span>300% mais vendas em média</span>
+        </div>
+
+        {/* Modelos de Negócio */}
+        <div className="text-center">
+          <p className="text-sm text-gray-400 mb-4 font-medium">
+            Ou escolha um modelo para seu tipo de negócio:
+          </p>
+          <div className="flex flex-wrap justify-center gap-1.5 md:gap-2 px-2">
+            {Object.entries(TEMPLATES).map(([key, template]) => (
+              <button
+                key={key}
+                onClick={() => applyTemplate(key)}
+                className="inline-flex items-center gap-1.5 md:gap-2 px-2.5 md:px-3 py-1.5 md:py-2 bg-gray-100 hover:bg-gray-200 
+                  rounded-lg text-xs md:text-sm text-gray-700 transition-colors"
+              >
+                <span>{template.icon}</span>
+                <span>{template.title}</span>
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
