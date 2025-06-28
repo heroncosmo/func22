@@ -447,26 +447,53 @@ const MonetizedAgentBuilder = () => {
               </div>
             </div>
             
-            {/* Botões de Ação - ChatGPT Style */}
+            {/* Botões de Ação - Mobile Style */}
             <div className="flex items-center space-x-2">
-              <Button
-                onClick={handleTestWhatsApp}
-                variant="outline"
-                size="sm"
-                className="border-gray-300 hover:border-gray-400 text-gray-700 h-8 text-xs px-3 rounded-md font-medium transition-all duration-200"
-              >
-                <Smartphone className="h-3 w-3 mr-1.5" />
-                Testar
-              </Button>
-              
-              <Button
-                onClick={handleConnectWhatsApp}
-                size="sm"
-                className="bg-black hover:bg-gray-800 text-white h-8 text-xs px-3 rounded-md font-medium transition-all duration-200"
-              >
-                <MessageSquare className="h-3 w-3 mr-1.5" />
-                Conectar WhatsApp
-              </Button>
+              {isMobile ? (
+                <>
+                  {/* Mobile - Apenas ícones */}
+                  <Button
+                    onClick={handleTestWhatsApp}
+                    variant="outline"
+                    size="sm"
+                    title="Testar funcionamento"
+                    className="border-gray-300 hover:border-gray-400 text-gray-700 h-8 w-8 p-0 rounded-md transition-all duration-200"
+                  >
+                    <Smartphone className="h-4 w-4" />
+                  </Button>
+                  
+                  <Button
+                    onClick={handleConnectWhatsApp}
+                    size="sm"
+                    title="Conectar WhatsApp"
+                    className="bg-black hover:bg-gray-800 text-white h-8 w-8 p-0 rounded-md transition-all duration-200"
+                  >
+                    <MessageSquare className="h-4 w-4" />
+                  </Button>
+                </>
+              ) : (
+                <>
+                  {/* Desktop - Com texto */}
+                  <Button
+                    onClick={handleTestWhatsApp}
+                    variant="outline"
+                    size="sm"
+                    className="border-gray-300 hover:border-gray-400 text-gray-700 h-8 text-xs px-3 rounded-md font-medium transition-all duration-200"
+                  >
+                    <Smartphone className="h-3 w-3 mr-1.5" />
+                    Testar
+                  </Button>
+                  
+                  <Button
+                    onClick={handleConnectWhatsApp}
+                    size="sm"
+                    className="bg-black hover:bg-gray-800 text-white h-8 text-xs px-3 rounded-md font-medium transition-all duration-200"
+                  >
+                    <MessageSquare className="h-3 w-3 mr-1.5" />
+                    Conectar WhatsApp
+                  </Button>
+                </>
+              )}
 
               {/* Indicador de Status */}
               <div className="flex items-center">
