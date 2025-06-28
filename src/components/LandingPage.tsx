@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Bot, Menu, X, ChevronDown, Star, Zap, Shield, Clock, Send } from 'lucide-react';
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface LandingPageProps {
   onStartChat: (message: string) => void;
@@ -108,7 +109,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartChat, onTemplateSelect
               <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
                 <Bot className="w-5 h-5 text-white" />
               </div>
-              <span className="font-bold text-xl">FuncionarioPro</span>
+              <span className="font-bold text-xl">FuncionárioPro</span>
             </div>
             <button onClick={() => setSidebarOpen(false)} className="p-1 hover:bg-gray-200 rounded">
               <X className="w-5 h-5" />
@@ -144,7 +145,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartChat, onTemplateSelect
               <div className="w-6 h-6 md:w-7 md:h-7 bg-black rounded-lg flex items-center justify-center">
                 <Bot className="w-3.5 h-3.5 md:w-4 md:h-4 text-white" />
               </div>
-              <span className="font-bold text-base md:text-lg">FuncionarioPro</span>
+              <span className="font-bold text-base md:text-lg">FuncionárioPro</span>
             </div>
           </div>
           
@@ -170,7 +171,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartChat, onTemplateSelect
           <h1 className="text-3xl sm:text-4xl md:text-7xl font-bold text-gray-900 mb-4 md:mb-6 leading-tight px-2">
             Crie seu{' '}
             <span className="bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent">
-              FuncionarioPro
+              FuncionárioPro
             </span>
           </h1>
           
@@ -296,21 +297,26 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartChat, onTemplateSelect
           <p className="text-lg md:text-xl text-gray-600 mb-10 md:mb-12">Escolha o plano ideal para seu negócio</p>
           
           <div className="grid md:grid-cols-2 gap-6 md:gap-8">
-            <div className="border-2 border-gray-200 rounded-xl md:rounded-2xl p-6 md:p-8">
-              <h3 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">Mensal</h3>
-              <div className="text-3xl md:text-4xl font-bold mb-2">R$ 49,90<span className="text-base md:text-lg text-gray-500">/mês</span></div>
-              <p className="text-gray-600 mb-6">Perfeito para começar</p>
-              <Button className="w-full bg-black hover:bg-gray-800" size="lg">Começar agora</Button>
+            <div className="bg-white p-4 md:p-6 rounded-lg shadow-lg w-full max-w-sm">
+              <h3 className="text-lg font-bold mb-2">Plano Mensal</h3>
+              <p className="text-3xl font-bold mb-2">R$ 49,90<span className="text-base font-normal">/mês</span></p>
+              <ul className="text-sm text-gray-600 space-y-1 mb-4">
+                <li>✅ Atendimento 24h</li>
+                <li>✅ Agendamentos ilimitados</li>
+                <li>✅ 1 número de WhatsApp</li>
+              </ul>
+              <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => onStartChat("Quero o plano mensal")}>Assinar Agora</Button>
               <p className="text-[10px] md:text-xs text-gray-500 mt-2">Use o cupom FUNCIONARIO10 e ganhe R$ 10 de desconto</p>
             </div>
-            <div className="border-2 border-black rounded-xl md:rounded-2xl p-6 md:p-8 relative">
-              <div className="absolute -top-2.5 md:-top-3 left-1/2 transform -translate-x-1/2 bg-black text-white px-3 md:px-4 py-0.5 md:py-1 rounded-full text-xs md:text-sm">
-                Mais popular
-              </div>
-              <h3 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">Anual</h3>
-              <div className="text-3xl md:text-4xl font-bold mb-2">R$ 499,00<span className="text-base md:text-lg text-gray-500">/ano</span></div>
-              <p className="text-gray-600 mb-6">2 meses grátis • R$ 41,58/mês</p>
-              <Button className="w-full bg-black hover:bg-gray-800" size="lg">Escolher anual</Button>
+            <div className="bg-white p-4 md:p-6 rounded-lg shadow-lg w-full max-w-sm">
+              <h3 className="text-lg font-bold mb-2">Plano Anual</h3>
+              <p className="text-3xl font-bold mb-2">R$ 499<span className="text-base font-normal">/ano</span></p>
+              <ul className="text-sm text-gray-600 space-y-1 mb-4">
+                <li>✅ Todos os benefícios do mensal</li>
+                <li>✅ Desconto de R$ 99</li>
+                <li>✅ Suporte prioritário</li>
+              </ul>
+              <Button className="w-full bg-green-600 hover:bg-green-700" onClick={() => onStartChat("Quero o plano anual")}>Assinar Agora</Button>
               <p className="text-[10px] md:text-xs text-gray-500 mt-2">Use o cupom FUNCIONARIO100 e ganhe R$ 100 de desconto</p>
             </div>
           </div>
@@ -331,7 +337,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartChat, onTemplateSelect
                   <p className="text-xs md:text-sm text-gray-600">São Paulo, SP</p>
                 </div>
               </div>
-              <p className="text-sm md:text-base text-gray-700 mb-3 md:mb-4">"Aumentamos 300% os pedidos noturnos. O FuncionarioPro atende quando estamos fechados!"</p>
+              <p className="text-sm md:text-base text-gray-700 mb-3 md:mb-4">"Aumentamos 300% os pedidos noturnos. O FuncionárioPro atende quando estamos fechados!"</p>
               <div className="text-xs md:text-sm text-gray-500">+300% em vendas noturnas</div>
             </div>
             <div className="bg-white p-4 md:p-6 rounded-xl md:rounded-2xl">
@@ -414,7 +420,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartChat, onTemplateSelect
           <Button 
             size="lg" 
             className="bg-white text-black hover:bg-gray-100"
-            onClick={() => onStartChat("Quero criar meu FuncionarioPro")}
+            onClick={() => onStartChat("Quero criar meu FuncionárioPro")}
           >
             Começar agora grátis
           </Button>

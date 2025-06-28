@@ -1,7 +1,7 @@
 {
   "sistema": {
-    "nome": "FuncionarioPro",
-    "descricao": "Sistema de automação que cria atendentes virtuais para responder clientes 24h no WhatsApp com respostas humanas",
+    "nome": "FuncionárioPro",
+    "descricao": "O FuncionárioPro é um sistema de chatbot com IA avançada, projetado para automatizar o atendimento ao cliente e impulsionar as vendas de negócios locais.",
     "versao": "2.0",
     "url": "https://funcionariopro.com"
   },

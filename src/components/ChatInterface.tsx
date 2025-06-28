@@ -1,10 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Send, Bot, User, ArrowUp } from 'lucide-react';
+import { Send, Bot, User, ArrowLeft } from 'lucide-react';
 import { AgentData } from './AgentBuilder';
 import { useToast } from '@/hooks/use-toast';
 import baseKnowledge from '@/data/base_conhecimento_funcionario_ia.json';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface Message {
   id: string;
@@ -23,6 +26,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ agentData }) => {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   // Initialize with welcome message
   useEffect(() => {
@@ -165,6 +169,10 @@ Responda de forma natural e conversacional.`;
     }
   };
 
+  const onBack = () => {
+    // Implement the back functionality
+  };
+
   return (
     <div className="flex flex-col h-full bg-white">
       {/* Área de Mensagens - Minimalista */}
@@ -173,12 +181,25 @@ Responda de forma natural e conversacional.`;
           /* Estado Inicial - Foco no Input */
           <div className="h-full flex flex-col items-center justify-center px-4">
             <div className="max-w-2xl w-full text-center mb-8">
-              <h1 className="text-3xl font-light text-gray-800 mb-2">
-                {agentData.businessName || 'FuncionarioPro'}
-              </h1>
-              <p className="text-gray-500 text-base">
-                Como posso ajudá-lo hoje?
-              </p>
+              <div className="flex items-center gap-3">
+                {isMobile && (
+                  <Button variant="ghost" size="icon" onClick={onBack}>
+                    <ArrowLeft className="h-5 w-5" />
+                  </Button>
+                )}
+                <Avatar className="h-10 w-10 border">
+                  <AvatarImage src={agentData.logo || '/placeholder.svg'} alt={agentData.businessName} />
+                  <AvatarFallback>{agentData.businessName ? agentData.businessName.charAt(0) : 'A'}</AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col">
+                  <h1 className="text-lg font-semibold text-gray-900">
+                    {'FuncionárioPro'}
+                  </h1>
+                  <div className="flex items-center gap-1.5">
+                    <span className="h-2 w-2 rounded-full bg-green-500" />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         ) : (

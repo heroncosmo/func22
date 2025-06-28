@@ -1,43 +1,33 @@
 @echo off
+setlocal
+
 echo.
-echo ========================================
-echo   FUNCIONARIO IA - SISTEMA DE AGENTES
-echo ========================================
+echo   FUNCIONÁRIO IA - SISTEMA DE AGENTES
+echo   ====================================
 echo.
 
-echo Verificando se Node.js esta instalado...
-node --version >nul 2>&1
+REM Verifica se o Node.js está instalado
+node -v >nul 2>&1
 if %errorlevel% neq 0 (
-    echo ERRO: Node.js nao esta instalado!
-    echo Por favor, instale o Node.js primeiro.
-    echo Download: https://nodejs.org/
+    echo [ERRO] Node.js nao encontrado. Por favor, instale-o para continuar.
+    echo        https://nodejs.org/
     pause
     exit /b 1
 )
 
-echo Node.js encontrado! Continuando...
-echo.
-
-echo Instalando dependencias...
-npm install
-
-if %errorlevel% neq 0 (
-    echo.
-    echo ERRO na instalacao das dependencias!
-    echo Tentando com npm clean...
-    npm cache clean --force
+REM Verifica se as dependências estão instaladas
+if not exist "node_modules" (
+    echo [INFO] Instalando dependencias...
     npm install
+    if %errorlevel% neq 0 (
+        echo [ERRO] Falha ao instalar as dependencias. Verifique sua conexao ou o npm.
+        pause
+        exit /b 1
+    )
 )
 
-echo.
-echo Iniciando o sistema...
-echo.
-echo O sistema sera aberto no navegador automaticamente.
-echo Para parar o sistema, pressione Ctrl+C
-echo.
-
-start http://localhost:8080
-
+echo [INFO] Iniciando o sistema...
+start http://localhost:5173
 npm run dev
 
-pause 
+endlocal 

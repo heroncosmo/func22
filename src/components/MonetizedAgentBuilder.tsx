@@ -9,6 +9,8 @@ import { Bot, Menu, Plus, Send, Smartphone, Share, Crown, Settings, X, CreditCar
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { toast } from 'sonner';
 
 export interface AgentData {
   businessName: string;
@@ -175,7 +177,7 @@ const MonetizedAgentBuilder = () => {
       return;
     }
     // Se já tem assinatura, conectar diretamente
-    openWhatsAppSupport("Olá! Quero conectar meu FuncionarioPro ao WhatsApp. Já tenho uma assinatura ativa.");
+    openWhatsAppSupport("Olá! Quero conectar meu FuncionárioPro ao WhatsApp. Já tenho uma assinatura ativa.");
   };
 
   const handlePublish = () => {
@@ -195,7 +197,7 @@ const MonetizedAgentBuilder = () => {
   // Gerar QR Code PIX
   const generatePixQRCode = (value: number) => {
     const pixKey = "17991610665"; // Sua chave PIX
-    const merchantName = "FuncionarioPro";
+    const merchantName = "FuncionárioPro";
     const merchantCity = "SAO PAULO";
     const txId = Math.random().toString(36).substring(7);
     
@@ -276,7 +278,7 @@ const MonetizedAgentBuilder = () => {
     } else {
       // Simular erro no cartão
       alert('Erro no processamento do cartão. Entre em contato com o suporte para assistência.');
-      openWhatsAppSupport("Olá! Tive um erro ao tentar pagar com cartão no FuncionarioPro. Preciso de ajuda.");
+      openWhatsAppSupport("Olá! Tive um erro ao tentar pagar com cartão no FuncionárioPro. Preciso de ajuda.");
     }
   };
 
@@ -291,7 +293,7 @@ const MonetizedAgentBuilder = () => {
               <div className="w-7 h-7 bg-black rounded-md flex items-center justify-center">
                 <Bot className="h-4 w-4 text-white" />
               </div>
-              <span className="text-sm font-semibold text-gray-900">FuncionarioPro</span>
+              <span className="text-sm font-semibold text-gray-900">FuncionárioPro</span>
             </div>
           </div>
           
@@ -331,7 +333,7 @@ const MonetizedAgentBuilder = () => {
           {/* Suporte WhatsApp - Desktop */}
           <div className="p-4 border-t border-gray-200">
             <a
-              href="https://wa.me/551132300474?text=Olá%2C%20preciso%20de%20ajuda%20com%20o%20FuncionarioPro"
+              href="https://wa.me/551132300474?text=Olá%2C%20preciso%20de%20ajuda%20com%20o%20FuncionárioPro"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 w-full px-3 py-2 bg-black hover:bg-gray-800 text-white text-sm rounded-lg transition-colors"
@@ -354,7 +356,7 @@ const MonetizedAgentBuilder = () => {
                 <div className="w-7 h-7 bg-black rounded-md flex items-center justify-center">
                   <Bot className="h-4 w-4 text-white" />
                 </div>
-                <span className="text-sm font-semibold text-gray-900">FuncionarioPro</span>
+                <span className="text-sm font-semibold text-gray-900">FuncionárioPro</span>
               </div>
               <Button
                 variant="ghost"
@@ -405,7 +407,7 @@ const MonetizedAgentBuilder = () => {
             {/* Suporte WhatsApp - Mobile */}
             <div className="p-4 border-t border-gray-200">
               <a
-                href="https://wa.me/551132300474?text=Olá%2C%20preciso%20de%20ajuda%20com%20o%20FuncionarioPro"
+                href="https://wa.me/551132300474?text=Olá%2C%20preciso%20de%20ajuda%20com%20o%20FuncionárioPro"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 w-full px-3 py-2 bg-black hover:bg-gray-800 text-white text-sm rounded-lg transition-colors"
@@ -440,7 +442,7 @@ const MonetizedAgentBuilder = () => {
                   <Bot className="h-3 w-3 text-white" />
                 </div>
                 <span className="text-sm font-medium text-gray-900">
-                  {agentData.businessName || 'FuncionarioPro'}
+                  {agentData.businessName || 'FuncionárioPro'}
                 </span>
               </div>
             </div>
@@ -750,7 +752,7 @@ const MonetizedAgentBuilder = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900">
-                    Libere o Poder Total do seu FuncionarioPro
+                    Libere o Poder Total do seu FuncionárioPro
                   </h2>
                   <p className="text-gray-600 mt-2">
                     Conecte ao WhatsApp e transforme seu atendimento hoje mesmo

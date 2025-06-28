@@ -10,6 +10,7 @@ export interface AgentData {
   personality: string;
   welcomeMessage: string;
   template: string;
+  logo?: string;
 }
 
 const AgentBuilder = () => {
