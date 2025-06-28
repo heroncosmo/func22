@@ -2583,42 +2583,40 @@ Perfeito! Você terá 7 dias para testar todas as funcionalidades sem pagar nada
         </div>
       </div>
 
-      {/* Input Area - Mobile Fixo no Rodapé */}
-      {!showTemplates && (
-        <div className="border-t border-gray-200 bg-white p-3 md:p-4 flex-shrink-0">
-          <div className="w-full max-w-full mx-auto">
-            <div className="flex items-center gap-2 w-full">
-              <div className="flex-1 relative w-full">
-                <input
-                  type="text"
-                  value={currentMessage}
-                  onChange={(e) => setCurrentMessage(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Digite sua mensagem..."
-                  className="w-full px-3 py-3 pr-12 bg-gray-50 border border-gray-300 rounded-lg text-sm md:text-base
-                    focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent
-                    placeholder-gray-500"
-                />
-                <button
-                  onClick={() => sendMessage()}
-                  disabled={!currentMessage.trim() || isLoading}
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 
-                    bg-black hover:bg-gray-800 disabled:bg-gray-300 
-                    text-white rounded-lg p-1.5 md:p-2 transition-colors"
-                >
-                  {isLoading ? (
-                    <div className="animate-spin rounded-full h-3 w-3 md:h-4 md:w-4 border-2 border-white border-t-transparent"></div>
-                  ) : (
-                    <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                    </svg>
-                  )}
-                </button>
-              </div>
+      {/* Input Area - SEMPRE FIXO NO RODAPÉ (como app nativo) */}
+      <div className="border-t border-gray-200 bg-white p-3 md:p-4 flex-shrink-0">
+        <div className="w-full max-w-full mx-auto">
+          <div className="flex items-center gap-2 w-full">
+            <div className="flex-1 relative w-full">
+              <input
+                type="text"
+                value={currentMessage}
+                onChange={(e) => setCurrentMessage(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder={showTemplates ? "Descreva seu negócio..." : "Digite sua mensagem..."}
+                className="w-full px-3 py-3 pr-12 bg-gray-50 border border-gray-300 rounded-lg text-sm md:text-base
+                  focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent
+                  placeholder-gray-500"
+              />
+              <button
+                onClick={() => sendMessage()}
+                disabled={!currentMessage.trim() || isLoading}
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 
+                  bg-black hover:bg-gray-800 disabled:bg-gray-300 
+                  text-white rounded-lg p-1.5 md:p-2 transition-colors"
+              >
+                {isLoading ? (
+                  <div className="animate-spin rounded-full h-3 w-3 md:h-4 md:w-4 border-2 border-white border-t-transparent"></div>
+                ) : (
+                  <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                  </svg>
+                )}
+              </button>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };
