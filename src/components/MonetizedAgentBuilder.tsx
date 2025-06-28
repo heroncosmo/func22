@@ -474,24 +474,24 @@ const MonetizedAgentBuilder = () => {
               ) : (
                 <>
                   {/* Desktop - Com texto */}
-                  <Button
-                    onClick={handleTestWhatsApp}
-                    variant="outline"
-                    size="sm"
-                    className="border-gray-300 hover:border-gray-400 text-gray-700 h-8 text-xs px-3 rounded-md font-medium transition-all duration-200"
-                  >
-                    <Smartphone className="h-3 w-3 mr-1.5" />
-                    Testar
-                  </Button>
-                  
-                  <Button
-                    onClick={handleConnectWhatsApp}
-                    size="sm"
-                    className="bg-black hover:bg-gray-800 text-white h-8 text-xs px-3 rounded-md font-medium transition-all duration-200"
-                  >
-                    <MessageSquare className="h-3 w-3 mr-1.5" />
-                    Conectar WhatsApp
-                  </Button>
+              <Button
+                onClick={handleTestWhatsApp}
+                variant="outline"
+                size="sm"
+                className="border-gray-300 hover:border-gray-400 text-gray-700 h-8 text-xs px-3 rounded-md font-medium transition-all duration-200"
+              >
+                <Smartphone className="h-3 w-3 mr-1.5" />
+                Testar
+              </Button>
+              
+              <Button
+                onClick={handleConnectWhatsApp}
+                size="sm"
+                className="bg-black hover:bg-gray-800 text-white h-8 text-xs px-3 rounded-md font-medium transition-all duration-200"
+              >
+                <MessageSquare className="h-3 w-3 mr-1.5" />
+                Conectar WhatsApp
+              </Button>
                 </>
               )}
 

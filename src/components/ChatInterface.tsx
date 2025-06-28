@@ -194,7 +194,7 @@ Responda de forma natural e conversacional.`;
                 <div className="flex flex-col">
                   <h1 className="text-lg font-semibold text-gray-900">
                     {'FuncionárioPro'}
-                  </h1>
+              </h1>
                   <div className="flex items-center gap-1.5">
                     <span className="h-2 w-2 rounded-full bg-green-500" />
                   </div>

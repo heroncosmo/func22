@@ -599,7 +599,7 @@ O que gostaria de fazer agora?`,
           Crie seu <span className="text-black">FuncionárioPro</span>
         </h1>
         <p className="text-lg md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed">
-          Atendimento humanizado inteligente e automático que responde clientes, agenda e aumenta suas vendas 24h no WhatsApp
+          Atendimento humanizado com inteligência artificial que responde clientes, agenda automaticamente e aumenta suas vendas 24h no WhatsApp
         </p>
       </div>
 
@@ -645,8 +645,8 @@ O que gostaria de fazer agora?`,
         </div>
       </div>
 
-      {/* Menu Sutil Inferior */}
-      <div className="flex flex-col sm:flex-row items-center gap-3 md:gap-6 text-sm text-gray-400">
+      {/* Menu Sutil */}
+      <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6 text-sm text-gray-400">
         <button
           onClick={() => {
             setShowTemplates(false);
@@ -677,16 +677,13 @@ O que gostaria de fazer agora?`,
           Criar meu FuncionárioPro
         </button>
         
-        <span className="hidden sm:inline text-gray-300">•</span>
+        <span className="hidden sm:block text-gray-300">•</span>
+        <span className="text-gray-500">Configure em 2 minutos</span>
         
-        <span className="hover:text-gray-600 transition-colors">Configure em 2 minutos</span>
+        <span className="hidden sm:block text-gray-300">•</span>
+        <span className="text-gray-500">Teste grátis por 7 dias</span>
         
-        <span className="hidden sm:inline text-gray-300">•</span>
-        
-        <span className="hover:text-gray-600 transition-colors">Teste grátis por 7 dias</span>
-        
-        <span className="hidden sm:inline text-gray-300">•</span>
-        
+        <span className="hidden sm:block text-gray-300">•</span>
         <a
           href="https://wa.me/551132300474?text=Olá%2C%20preciso%20de%20ajuda%20com%20o%20FuncionárioPro"
           target="_blank"
@@ -695,53 +692,6 @@ O que gostaria de fazer agora?`,
         >
           Precisa de ajuda?
         </a>
-      </div>
-
-      {/* Seção Informativa - Mais Abaixo */}
-      <div className="mt-24 w-full max-w-6xl space-y-16">
-        {/* Badge de Benefício */}
-        <div className="text-center">
-          <div className="inline-flex items-center gap-1.5 md:gap-2 bg-gray-100 px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm text-gray-700">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5 md:w-4 md:h-4">
-              <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
-            </svg>
-            <span>Atendimento 24h automático no WhatsApp</span>
-          </div>
-        </div>
-
-        {/* Estatísticas */}
-        <div className="flex items-center justify-center gap-2 sm:gap-4 md:gap-6 text-xs md:text-sm text-gray-500">
-          <div className="flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5 md:w-4 md:h-4 fill-yellow-400 text-yellow-400">
-              <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
-            </svg>
-            <span>4.9/5 em avaliações</span>
-          </div>
-          <span className="inline text-gray-300">•</span>
-          <span>+2.000 negócios automatizados</span>
-          <span className="inline text-gray-300">•</span>
-          <span>300% mais vendas em média</span>
-        </div>
-
-        {/* Modelos de Negócio */}
-        <div className="text-center">
-          <p className="text-sm text-gray-400 mb-4 font-medium">
-            Ou escolha um modelo para seu tipo de negócio:
-          </p>
-          <div className="flex flex-wrap justify-center gap-1.5 md:gap-2 px-2">
-            {Object.entries(TEMPLATES).map(([key, template]) => (
-              <button
-                key={key}
-                onClick={() => applyTemplate(key)}
-                className="inline-flex items-center gap-1.5 md:gap-2 px-2.5 md:px-3 py-1.5 md:py-2 bg-gray-100 hover:bg-gray-200 
-                  rounded-lg text-xs md:text-sm text-gray-700 transition-colors"
-              >
-                <span>{template.icon}</span>
-                <span>{template.title}</span>
-              </button>
-            ))}
-          </div>
-        </div>
       </div>
     </div>
   );
@@ -2495,10 +2445,10 @@ Perfeito! Você terá 7 dias para testar todas as funcionalidades sem pagar nada
       {/* Chat Container - Layout Mobile Otimizado */}
       <div className="flex-1 overflow-y-auto overflow-x-hidden bg-white min-h-0">
         <div className="w-full px-3 md:px-4 py-3 md:py-4 space-y-3 md:space-y-4 pb-24 md:pb-6">
-          {showTemplates ? (
-            renderTemplates()
-          ) : (
-            <>
+      {showTemplates ? (
+        renderTemplates()
+      ) : (
+        <>
               {messages.map((message) => (
                 <div key={message.id} className="mb-3 md:mb-4">
                   <div className="flex items-start gap-2 md:gap-4 w-full max-w-full">
@@ -2527,18 +2477,18 @@ Perfeito! Você terá 7 dias para testar todas as funcionalidades sem pagar nada
                             {message.content}
                           </div>
                           <div className="w-full overflow-hidden">
-                            <InlineFieldInput
-                              fieldName={message.fieldData.fieldName}
-                              fieldLabel={message.fieldData.fieldLabel}
-                              fieldType={message.fieldData.fieldType}
-                              placeholder={message.fieldData.placeholder}
-                              currentValue={message.fieldData.currentValue}
-                              onSubmit={handleFieldResponse}
-                              onCancel={() => {
-                                setMessages(prev => prev.filter(m => m.id !== message.id));
-                              }}
-                              options={message.fieldData.options}
-                            />
+                          <InlineFieldInput
+                            fieldName={message.fieldData.fieldName}
+                            fieldLabel={message.fieldData.fieldLabel}
+                            fieldType={message.fieldData.fieldType}
+                            placeholder={message.fieldData.placeholder}
+                            currentValue={message.fieldData.currentValue}
+                            onSubmit={handleFieldResponse}
+                            onCancel={() => {
+                              setMessages(prev => prev.filter(m => m.id !== message.id));
+                            }}
+                            options={message.fieldData.options}
+                          />
                           </div>
                         </div>
                       )}
@@ -2563,12 +2513,12 @@ Perfeito! Você terá 7 dias para testar todas as funcionalidades sem pagar nada
                                 <X className="h-3 w-3" />
                               </Button>
                             </div>
-                            <WhatsAppSimulator 
-                              agentData={agentData} 
-                              onClose={() => {
-                                setMessages(prev => prev.filter(m => m.id !== message.id));
-                              }}
-                            />
+                              <WhatsAppSimulator 
+                                agentData={agentData} 
+                                onClose={() => {
+                                  setMessages(prev => prev.filter(m => m.id !== message.id));
+                                }}
+                              />
                           </div>
                         </div>
                       )}
@@ -2594,8 +2544,8 @@ Perfeito! Você terá 7 dias para testar todas as funcionalidades sem pagar nada
                 </div>
               )}
               <div ref={messagesEndRef} />
-            </>
-          )}
+        </>
+      )}
         </div>
       </div>
 
@@ -2607,21 +2557,21 @@ Perfeito! Você terá 7 dias para testar todas as funcionalidades sem pagar nada
               <div className="flex-1 relative w-full">
                 <input
                   type="text"
-                  value={currentMessage}
-                  onChange={(e) => setCurrentMessage(e.target.value)}
-                  onKeyPress={handleKeyPress}
+              value={currentMessage}
+              onChange={(e) => setCurrentMessage(e.target.value)}
+              onKeyPress={handleKeyPress}
                   placeholder="Digite sua mensagem..."
                   className="w-full px-3 py-3 pr-12 bg-gray-50 border border-gray-300 rounded-lg text-sm md:text-base
                     focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent
                     placeholder-gray-500"
-                />
-                <button
-                  onClick={() => sendMessage()}
-                  disabled={!currentMessage.trim() || isLoading}
+            />
+            <button
+              onClick={() => sendMessage()}
+              disabled={!currentMessage.trim() || isLoading}
                   className="absolute right-2 top-1/2 transform -translate-y-1/2 
                     bg-black hover:bg-gray-800 disabled:bg-gray-300 
                     text-white rounded-lg p-1.5 md:p-2 transition-colors"
-                >
+            >
                   {isLoading ? (
                     <div className="animate-spin rounded-full h-3 w-3 md:h-4 md:w-4 border-2 border-white border-t-transparent"></div>
                   ) : (
@@ -2629,10 +2579,10 @@ Perfeito! Você terá 7 dias para testar todas as funcionalidades sem pagar nada
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                     </svg>
                   )}
-                </button>
-              </div>
-            </div>
+            </button>
           </div>
+        </div>
+      </div>
         </div>
       )}
     </div>
