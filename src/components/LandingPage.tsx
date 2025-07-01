@@ -492,7 +492,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onTemplateSelect }) => {
             {Object.entries(TEMPLATES).map(([key, template]) => (
               <div 
                 key={key} 
-                onClick={() => handleTemplateSelect(key)}
+                onClick={() => setActiveSimulator(key)}
                 className="group flex flex-col text-left p-6 bg-white rounded-2xl h-full border border-transparent hover:border-gray-300 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer"
               >
                 <div className="text-4xl mb-4">{template.icon}</div>
