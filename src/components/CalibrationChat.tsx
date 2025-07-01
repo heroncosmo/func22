@@ -467,7 +467,7 @@ const CalibrationChat: React.FC<CalibrationChatProps> = ({ agentData, onAgentUpd
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, isLoading]);
+  }, [messages]);
 
   // Processar mensagem inicial ou template da landing page
   useEffect(() => {
@@ -655,12 +655,8 @@ O que gostaria de fazer?`,
 
   const scrollToBottom = () => {
     setTimeout(() => {
-      messagesEndRef.current?.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'start'
-      });
-    }, 150);
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -791,17 +787,11 @@ O que gostaria de fazer?`,
     setMessages(prev => [...prev, userMessage]);
     setCurrentMessage('');
 
-    // Scroll automático imediato para mostrar mensagem do usuário
-    setTimeout(() => scrollToBottom(), 100);
-
     if (showTemplates) {
       setShowTemplates(false);
     }
 
     await handleChat(messageToSend);
-    
-    // Scroll automático adicional após processamento para mostrar resposta
-    setTimeout(() => scrollToBottom(), 500);
   };
 
   const handleChat = async (message: string) => {
@@ -1813,9 +1803,6 @@ ${value}`,
       };
       setMessages(prev => [...prev, confirmMessage]);
       
-      // Scroll automático imediato para mostrar confirmação
-      setTimeout(() => scrollToBottom(), 100);
-      
       // Avançar para próximo campo
       const nextStep = currentConfigStep + 1;
       setCurrentConfigStep(nextStep);
@@ -1835,15 +1822,11 @@ ${value}`,
             acceptsReservations: fieldName === 'acceptsReservations' ? value : agentData.acceptsReservations
           };
           showConfigStepDirect(nextStep, defaultData, configSteps);
-          // Scroll automático adicional para mostrar próximo campo
-          setTimeout(() => scrollToBottom(), 300);
         } else {
           // Configuração concluída
           setConfigSteps([]); // Reset
           setCurrentConfigStep(0);
           completeStepByStepConfig();
-          // Scroll automático para mostrar conclusão
-          setTimeout(() => scrollToBottom(), 300);
         }
       }, 1500);
       
@@ -2528,6 +2511,13 @@ Perfeito! Você terá 7 dias para testar todas as funcionalidades sem pagar nada
   //   }
   // }, [showTemplates, isLoading, messages.length]);
 
+  // Função para detectar se há fluxo guiado ativo
+  const hasActiveGuidedFlow = () => {
+    // Verificar se a última mensagem é um campo não confirmado
+    const lastMessage = messages[messages.length - 1];
+    return lastMessage?.type === 'field' && !lastMessage.confirmed;
+  };
+
   // Novas sugestões de ação estilo ChatGPT
   const renderActionSuggestions = () => {
     // Não mostrar sugestões se houver campos de formulário na última mensagem
@@ -2637,7 +2627,7 @@ Vou mostrar cada campo para você confirmar ou alterar.`,
   return (
     <div className="relative flex-1 h-full bg-white">
       {/* Chat Container - Ocupa todo o espaço e permite rolagem */}
-      <div className="absolute top-0 left-0 right-0 bottom-0 overflow-y-auto pb-64 md:pb-72">
+      <div className="absolute top-0 left-0 right-0 bottom-0 overflow-y-auto pb-48">
         <div className="w-full max-w-3xl mx-auto px-3 md:px-4 py-3 md:py-4 space-y-3 md:space-y-4">
       {showTemplates ? (
         renderTemplates()
@@ -2748,14 +2738,14 @@ Vou mostrar cada campo para você confirmar ou alterar.`,
                   </div>
                 </div>
               )}
-              <div ref={messagesEndRef} className="h-4" />
+              <div ref={messagesEndRef} />
         </>
       )}
         </div>
       </div>
 
       {/* Input Area - Design flutuante com posicionamento absoluto */}
-      {!showTemplates && (
+      {!showTemplates && !hasActiveGuidedFlow() && (
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-white via-white/95 to-transparent pointer-events-none">
           <div className="max-w-3xl mx-auto p-2 md:p-4 pointer-events-auto">
             <div className="relative">
