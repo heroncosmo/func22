@@ -84,11 +84,11 @@ const LandingPage: React.FC<LandingPageProps> = ({ onTemplateSelect }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('');
   const [activeSimulator, setActiveSimulator] = useState<string | null>(null);
-  const [isTyping, setIsTyping] = useState(false);
-  const [currentPlaceholder, setCurrentPlaceholder] = useState('');
 
   // PLACEHOLDER ANIMADO COM EFEITO DE DIGITAÇÃO
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
+  const [currentPlaceholder, setCurrentPlaceholder] = useState('');
+  const [isTyping, setIsTyping] = useState(true);
   
   const placeholders = [
     "Crie um atendente para minha clínica...",
@@ -99,13 +99,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ onTemplateSelect }) => {
     "Assistente automático para consultório..."
   ];
 
-  // Mensagens de carregamento em sequência
+  // Sequência de mensagens tranquilizadoras
   const loadingMessages = [
-    'Analisando sua solicitação...',
-    'Identificando o tipo do seu negócio...',
-    'Personalizando seu funcionário virtual...',
-    'Preparando ambiente de configuração...',
-    'Quase lá! Configurando últimos detalhes...'
+    "Analisando sua solicitação...",
+    "Personalizando seu funcionário virtual...",
+    "Configurando respostas inteligentes...",
+    "Ajustando tom de comunicação...",
+    "Preparando ambiente de trabalho...",
+    "Quase pronto! Finalizando configurações..."
   ];
 
   // Efeito de digitação do placeholder
@@ -158,16 +159,30 @@ const LandingPage: React.FC<LandingPageProps> = ({ onTemplateSelect }) => {
     };
   }, [placeholderIndex]);
 
+  // Efeito para alternar mensagens durante o carregamento
+  useEffect(() => {
+    let messageIndex = 0;
+    let interval: NodeJS.Timeout;
+
+    if (isLoading) {
+      setLoadingMessage(loadingMessages[0]);
+      interval = setInterval(() => {
+        messageIndex = (messageIndex + 1) % loadingMessages.length;
+        setLoadingMessage(loadingMessages[messageIndex]);
+      }, 3000);
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isLoading]);
+
   const handleCreateAgentFromPrompt = async () => {
     if (!currentMessage.trim()) return;
-    setIsLoading(true);
     
-    // Iniciar sequência de mensagens
-    let messageIndex = 0;
-    const messageInterval = setInterval(() => {
-      setLoadingMessage(loadingMessages[messageIndex]);
-      messageIndex = (messageIndex + 1) % loadingMessages.length;
-    }, 3000);
+    // Iniciar loading imediatamente
+    setIsLoading(true);
+    setLoadingMessage(loadingMessages[0]);
 
     const businessTypes = Object.keys(BUSINESS_TEMPLATES.tipos_negocio);
     const initialPrompt = `
@@ -175,10 +190,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onTemplateSelect }) => {
 
       Categorias disponíveis: [${businessTypes.join(', ')}]
       
-      Use "clinica" para: advogados, médicos, dentistas, psicólogos, contadores
-      Use "restaurante" para: lanchonetes, bares, cafeterias, delivery de comida
-      Use "loja" para: comércio em geral, varejo, e-commerce
-      Use "salao" para: barbearias, cabeleireiros, estética, spa
+      Use "clinica" para: advogados médicos dentistas psicólogos contadores
+      Use "restaurante" para: lanchonetes bares cafeterias delivery de comida
+      Use "loja" para: comércio em geral varejo e-commerce
+      Use "salao" para: barbearias cabeleireiros estética spa
       
       Frase do usuário: "${currentMessage}"
 
@@ -252,18 +267,19 @@ const LandingPage: React.FC<LandingPageProps> = ({ onTemplateSelect }) => {
           placeholders_exemplos
         }));
         
-        navigate(`/chat?tipo=${categoria_template}&nome=${encodeURIComponent(nome_negocio_especifico)}&custom=${customData}`);
+        // Garantir tempo mínimo de exibição das mensagens de loading
+        setTimeout(() => {
+          navigate(`/chat?tipo=${categoria_template}&nome=${encodeURIComponent(nome_negocio_especifico)}&custom=${customData}`);
+        }, 2000);
       } else {
         throw new Error('A resposta da IA não continha os dados esperados.');
       }
     } catch (error) {
       console.error("Erro ao contatar ou processar resposta da IA:", error);
       toast.error("Não consegui entender, vamos configurar como uma loja e você ajusta.");
-      navigate(`/chat?tipo=loja`);
-    } finally {
-      clearInterval(messageInterval);
-      setIsLoading(false);
-      setLoadingMessage('');
+      setTimeout(() => {
+        navigate(`/chat?tipo=loja`);
+      }, 2000);
     }
   };
 
@@ -348,6 +364,16 @@ const LandingPage: React.FC<LandingPageProps> = ({ onTemplateSelect }) => {
 
           {/* Input principal GIGANTE - foco principal */}
           <div className="w-full max-w-3xl mx-auto mb-6 md:mb-8 px-2">
+            {/* Loading Message */}
+            {isLoading && (
+              <div className="flex items-center justify-center mb-4">
+                <div className="flex items-center gap-3 text-gray-700 bg-gray-50 px-4 py-2 rounded-lg shadow-sm">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black"></div>
+                  <span className="text-sm font-medium">{loadingMessage}</span>
+                </div>
+              </div>
+            )}
+            
             <div className="relative">
               <textarea
                 value={currentMessage}
@@ -358,6 +384,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onTemplateSelect }) => {
                     handleCreateAgentFromPrompt();
                   }
                 }}
+                disabled={isLoading}
                 autoFocus
                 placeholder={currentPlaceholder + (isTyping ? '|' : '')}
                 className="w-full h-32 md:h-40 px-6 py-6 text-lg md:text-xl bg-white border-2 border-gray-200 rounded-2xl
@@ -388,18 +415,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onTemplateSelect }) => {
                   </>
                 )}
               </Button>
-
-              {/* Mensagem de carregamento */}
-              {isLoading && loadingMessage && (
-                <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-full text-center">
-                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-md border border-gray-100">
-                    <div className="w-4 h-4 relative">
-                      <div className="absolute inset-0 border-t-2 border-r-2 border-black rounded-full animate-spin"></div>
-                    </div>
-                    <span className="text-sm font-medium text-gray-700">{loadingMessage}</span>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
 
