@@ -5,6 +5,7 @@ import { MISTRAL_CONFIG } from '../config/mistral-config.js';
 import InlineFieldInput from './InlineFieldInput';
 import WhatsAppSimulator from './WhatsAppSimulator';
 import LandingPage from './LandingPage';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
 
 interface Message {
   id: string;
@@ -13,6 +14,7 @@ interface Message {
   timestamp: Date;
   type?: 'text' | 'whatsapp' | 'field' | 'completion';
   fieldData?: any;
+  confirmed?: boolean; // Novo campo para controlar se o campo foi confirmado
 }
 
 interface AgentData {
@@ -36,6 +38,28 @@ interface AgentData {
 interface CalibrationChatProps {
   agentData: AgentData;
   onAgentUpdate: (updates: Partial<AgentData>) => void;
+  autoStartBusinessType?: string;
+  specificBusinessName?: string;
+  customData?: {
+    perguntas_personalizadas: {
+      businessName: string;
+      contactPhone: string;
+      services: string;
+      workingHours: string;
+      paymentMethods: string;
+      location: string;
+      hasDelivery: string;
+      acceptsReservations: string;
+    };
+    placeholders_exemplos: {
+      businessName: string;
+      contactPhone: string;
+      services: string;
+      paymentMethods: string;
+      workingHours: string;
+      location: string;
+    };
+  };
 }
 
 // CONFIGURAÇÃO ÚNICA SEM DUPLICAÇÕES
@@ -303,7 +327,7 @@ interface ConfigData {
   isShowingField: boolean;
 }
 
-const CalibrationChat: React.FC<CalibrationChatProps> = ({ agentData, onAgentUpdate }) => {
+const CalibrationChat: React.FC<CalibrationChatProps> = ({ agentData, onAgentUpdate, autoStartBusinessType, specificBusinessName, customData }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentMessage, setCurrentMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -313,6 +337,7 @@ const CalibrationChat: React.FC<CalibrationChatProps> = ({ agentData, onAgentUpd
     isConfiguring: false,
     isShowingField: false
   });
+  const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   // PLACEHOLDER ANIMADO COM EFEITO DE DIGITAÇÃO - Estilo Lovable
@@ -526,6 +551,18 @@ O que gostaria de fazer agora?`,
     }
   }, []);
 
+  // Auto-iniciar configuração quando há tipo especificado
+  useEffect(() => {
+    if (autoStartBusinessType && messages.length === 0) {
+      console.log('🚀 Auto-iniciando configuração para:', autoStartBusinessType);
+      setTimeout(() => {
+        if (TEMPLATES[autoStartBusinessType as keyof typeof TEMPLATES]) {
+          applyTemplate(autoStartBusinessType);
+        }
+      }, 1000);
+    }
+  }, [autoStartBusinessType, messages.length]);
+
   useEffect(() => {
     if (configData.isShowingField && configData.isConfiguring && !configData.isShowingField) {
       setConfigData({ ...configData, isShowingField: false });
@@ -557,23 +594,62 @@ O que gostaria de fazer agora?`,
 
       // Mostrar simulador na próxima linha após pequeno delay
       setTimeout(() => {
-        const whatsappMessage: Message = {
-          id: generateUniqueId(),
-          content: 'Teste seu funcionário virtual:',
-          sender: 'assistant',
-          timestamp: new Date(),
-          type: 'whatsapp'
-        };
-        setMessages(prev => [...prev, whatsappMessage]);
+        setShowWhatsAppModal(true); // Abrir modal em vez de inline
       }, 1500);
     };
 
     window.addEventListener('openWhatsAppInline', handleOpenWhatsAppInline);
     window.addEventListener('testButtonClicked', handleTestButton);
     
+    // NOVOS EVENT LISTENERS para reconfiguração
+    const handleStartReconfiguration = (event: any) => {
+      const { businessType, businessName, customData } = event.detail;
+      console.log('🔄 Iniciando reconfiguração:', { businessType, businessName, customData });
+      
+      // Limpar chat e iniciar nova configuração
+      setMessages([]);
+      setShowTemplates(false);
+      
+      // Iniciar configuração com novos dados
+      setTimeout(() => {
+        startStepByStepConfig(businessType, businessName, null);
+      }, 500);
+    };
+
+    const handleKeepExistingConfig = (event: any) => {
+      const { existingData } = event.detail;
+      console.log('✅ Mantendo configuração existente:', existingData);
+      
+      // Mostrar mensagem de boas-vindas com opções
+      const welcomeMessage: Message = {
+        id: Date.now().toString(),
+        content: `✅ **Olá! Sua configuração está pronta:**
+
+**🏢 ${existingData.businessName}**
+**📱 ${existingData.contactPhone || 'WhatsApp não configurado'}**
+
+Você pode:
+• **Editar** sua configuração atual
+• **Conectar** ao WhatsApp oficial
+• **Assinar** um plano premium
+
+O que gostaria de fazer?`,
+        sender: 'assistant',
+        timestamp: new Date()
+      };
+      
+      setMessages([welcomeMessage]);
+      setShowTemplates(false);
+    };
+
+    window.addEventListener('startReconfiguration', handleStartReconfiguration);
+    window.addEventListener('keepExistingConfig', handleKeepExistingConfig);
+
     return () => {
       window.removeEventListener('openWhatsAppInline', handleOpenWhatsAppInline);
       window.removeEventListener('testButtonClicked', handleTestButton);
+      window.removeEventListener('startReconfiguration', handleStartReconfiguration);
+      window.removeEventListener('keepExistingConfig', handleKeepExistingConfig);
     };
   }, []);
 
@@ -749,7 +825,7 @@ O que gostaria de fazer agora?`,
   // DETECTAR COMANDOS DE EDIÇÃO
   const detectEditCommand = (message: string): boolean => {
     const editKeywords = ['alterar', 'mudar', 'editar', 'corrigir', 'modificar', 'trocar'];
-    const fieldKeywords = ['nome', 'telefone', 'whatsapp', 'endereço', 'horário', 'produto', 'serviço', 'pagamento'];
+    const fieldKeywords = ['nome', 'telefone', 'whatsapp', 'endereço', 'horário', 'produto', 'serviço', 'servico', 'pagamento'];
     
     const msg = message.toLowerCase();
     const hasEditKeyword = editKeywords.some(keyword => msg.includes(keyword));
@@ -988,7 +1064,7 @@ O que gostaria de fazer agora?`,
       'escola': 'Escola/Educação'
     };
 
-    const typeName = businessTypeNames[businessType as keyof typeof businessTypeNames] || businessType;
+    const typeName = specificBusinessName || businessTypeNames[businessType as keyof typeof businessTypeNames] || businessType;
     
     // Definir sequência de campos a configurar
     const steps = ['businessName', 'contactPhone', 'location', 'workingHours', 'services', 'paymentMethods', 'hasDelivery', 'acceptsReservations'];
@@ -1041,7 +1117,8 @@ Preencherei com dados padrão, mas você pode editar tudo! 😊
     const fieldName = steps[stepIndex];
     console.log(`📝 Mostrando campo: ${fieldName}`);
     
-    const fieldLabels = {
+    // Usar perguntas personalizadas se disponíveis, senão usar padrão
+    const defaultFieldLabels = {
       businessName: 'Nome do Negócio',
       contactPhone: 'Telefone/WhatsApp',
       location: 'Localização',
@@ -1052,8 +1129,22 @@ Preencherei com dados padrão, mas você pode editar tudo! 😊
       acceptsReservations: 'Agendamento'
     };
 
+    const fieldLabels = customData?.perguntas_personalizadas || defaultFieldLabels;
+
     const currentValue = defaultData[fieldName] || '';
     console.log(`💾 Valor atual para ${fieldName}: ${currentValue}`);
+    
+    // Usar placeholders personalizados se disponíveis
+    const defaultPlaceholders = {
+      businessName: 'Ex: Minha Empresa',
+      services: 'Ex: Serviço 1, Serviço 2',
+      paymentMethods: 'Ex: PIX, Cartão, Dinheiro',
+      workingHours: 'Ex: Seg-Sex: 8h-18h',
+      location: 'Ex: Rua das Flores, 123'
+    };
+    
+    const placeholders = customData?.placeholders_exemplos || defaultPlaceholders;
+    const placeholder = placeholders[fieldName as keyof typeof placeholders] || defaultPlaceholders[fieldName as keyof typeof defaultPlaceholders];
     
     // Determinar tipo de campo baseado no nome do campo
     let fieldType = 'input';
@@ -1079,7 +1170,7 @@ Preencherei com dados padrão, mas você pode editar tudo! 😊
         fieldName: fieldName,
         fieldLabel: fieldLabels[fieldName as keyof typeof fieldLabels],
         fieldType: fieldType,
-        placeholder: String(currentValue),
+        placeholder: placeholder,
         defaultValue: String(currentValue),
         configStep: stepIndex,
         isStepByStepConfig: true,
@@ -1179,14 +1270,7 @@ Preencherei com dados padrão, mas você pode editar tudo! 😊
 
     // Após 3 segundos, mostrar automaticamente o simulador de WhatsApp
     setTimeout(() => {
-      const whatsappMessage: Message = {
-        id: generateUniqueId(),
-        content: 'Teste seu funcionário virtual:',
-        sender: 'assistant',
-        timestamp: new Date(),
-        type: 'whatsapp'
-      };
-      setMessages(prev => [...prev, whatsappMessage]);
+      setShowWhatsAppModal(true);
     }, 3000);
   };
 
@@ -1410,14 +1494,7 @@ Preencherei com dados padrão, mas você pode editar tudo! 😊
 
       // Mostrar simulador de WhatsApp automaticamente em uma nova linha
       setTimeout(() => {
-        const whatsappSimulator: Message = {
-          id: generateUniqueId(),
-          content: '📱 **Seu funcionário virtual está pronto! Teste agora como ele vai atender seus clientes:**',
-          sender: 'assistant',
-          timestamp: new Date(),
-          type: 'whatsapp'
-        };
-        setMessages(prev => [...prev, whatsappSimulator]);
+        setShowWhatsAppModal(true);
       }, 3000);
 
     } else {
@@ -1702,6 +1779,14 @@ Agora vou configurar passo a passo para você poder editar tudo! 😊`,
       };
       onAgentUpdate(updateData);
       
+      // Marcar o campo atual como confirmado
+      setMessages(prev => prev.map(msg => {
+        if (msg.type === 'field' && !msg.confirmed) {
+          return { ...msg, confirmed: true };
+        }
+        return msg;
+      }));
+
       // Confirmação visual
       const confirmMessage: Message = {
         id: Date.now().toString(),
@@ -1710,7 +1795,7 @@ Agora vou configurar passo a passo para você poder editar tudo! 😊`,
                        fieldName === 'location' ? 'Localização' :
                        fieldName === 'workingHours' ? 'Horários' :
                        fieldName === 'services' ? 'Serviços' :
-                       fieldName === 'paymentMethods' ? 'Pagamentos' : 'Campo'} atualizado!**
+                       fieldName === 'paymentMethods' ? 'Pagamentos' : 'Campo'} confirmado!**
 
 ${value}`,
         sender: 'assistant',
@@ -1767,6 +1852,21 @@ ${value}`,
         setMessages(prev => [...prev, askProfession]);
         return;
 
+      case 'edit_config':
+        startGuidedEdit();
+        return;
+      
+      case 'test_whatsapp':
+        const whatsappMessage: Message = {
+            id: generateUniqueId(),
+            content: 'Iniciando o simulador...',
+            sender: 'assistant',
+            timestamp: new Date(),
+            type: 'whatsapp'
+        };
+        setMessages(prev => [...prev, whatsappMessage]);
+        return;
+
       case 'see_prices':
         handleChat('quanto custa');
         return;
@@ -1818,65 +1918,30 @@ ${value}`,
       case 'connect_direct':
       case 'connect_now':
         // Disparar evento para mostrar o banner de conexão com WhatsApp 
-        const connectEvent = new CustomEvent('openConnectWhatsApp', {
+        const connectEvent = new CustomEvent('connectWhatsApp', {
           detail: { 
             businessName: agentData.businessName,
             businessType: agentData.businessType
           }
         });
         window.dispatchEvent(connectEvent);
-        
-        const whatsappConnectMessage: Message = {
-          id: Date.now().toString(),
-          content: `**📱 Conectar ao WhatsApp**
-
-        Para conectar seu FuncionarioPro ao WhatsApp:
-
-1. ✅ **Escolha um plano** - Temos opções que cabem no seu orçamento
-2. ✅ **QR Code** - Escaneie com seu celular
-3. ✅ **Verificação** - Confirme a conexão
-4. ✅ **Pronto!** - Funcionário ativo 24h`,
-          sender: 'assistant',
-          timestamp: new Date(),
-          type: 'field',
-          fieldData: {
-            fieldName: 'connectOption',
-            fieldLabel: 'Opção de Conexão',
-            fieldType: 'buttons',
-            options: [
-              { value: 'plan_free', label: '🆓 Teste Grátis 7 dias' },
-              { value: 'plan_starter', label: '💼 Plano Mensal R$49,90' },
-              { value: 'plan_annual', label: '🔥 Anual R$39,90/mês' }
-            ]
-          }
-        };
-        setMessages(prev => [...prev, whatsappConnectMessage]);
         return;
         
-      case 'edit_config':
-        const editMessage: Message = {
-          id: Date.now().toString(),
-          content: `**✏️ Editar Configuração**
-
-O que você gostaria de alterar?`,
-          sender: 'assistant',
-          timestamp: new Date(),
-          type: 'field',
-          fieldData: {
-            fieldName: 'editField',
-            fieldLabel: 'Campo para Editar',
-            fieldType: 'buttons',
-            options: [
-              { value: 'edit_businessName', label: '🏷️ Nome do negócio' },
-              { value: 'edit_contactPhone', label: '📞 Telefone' },
-              { value: 'edit_location', label: '📍 Localização' },
-              { value: 'edit_workingHours', label: '🕒 Horários' },
-              { value: 'edit_services', label: '🍕 Serviços' },
-              { value: 'edit_paymentMethods', label: '💳 Pagamentos' }
-            ]
+      case 'plan_free':
+      case 'test_free':
+      case 'plan_starter':
+      case 'plan_pro':
+      case 'plan_enterprise':
+      case 'plan_annual':
+        // Disparar evento para mostrar o banner de upgrade
+        const upgradeEvent = new CustomEvent('openUpgradeModal', {
+          detail: { 
+            plan: value,
+            businessName: agentData.businessName,
+            businessType: agentData.businessType
           }
-        };
-        setMessages(prev => [...prev, editMessage]);
+        });
+        window.dispatchEvent(upgradeEvent);
         return;
 
       case 'show_details':
@@ -2220,15 +2285,15 @@ ${agentData.services}
         
         const editInlineMessage: Message = {
           id: Date.now().toString(),
-          content: `✏️ **Editando: ${fieldLabels[fieldToEdit]}**\n\n**Valor atual:** ${currentValue || 'Não definido'}\n\n**Digite o novo valor:**`,
+          content: `✏️ **Editando: ${fieldLabels[fieldToEdit as keyof typeof fieldLabels]}**\n\n**Valor atual:** ${currentValue || 'Não definido'}\n\n**Digite o novo valor:**`,
           sender: 'assistant',
           timestamp: new Date(),
           type: 'field',
           fieldData: {
             fieldName: fieldToEdit,
-            fieldLabel: fieldLabels[fieldToEdit],
+            fieldLabel: fieldLabels[fieldToEdit as keyof typeof fieldLabels],
             fieldType: fieldToEdit === 'workingHours' || fieldToEdit === 'services' ? 'textarea' : 'text',
-            placeholder: `Digite ${fieldLabels[fieldToEdit].toLowerCase()}`,
+            placeholder: `Digite ${fieldLabels[fieldToEdit as keyof typeof fieldLabels].toLowerCase()}`,
             currentValue: currentValue,
             isEditing: true
           }
@@ -2438,17 +2503,139 @@ Perfeito! Você terá 7 dias para testar todas as funcionalidades sem pagar nada
     }
   }, [agentData]);
 
+  // Foco automático no input
+  const inputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (!showTemplates && inputRef.current) {
+      setTimeout(() => inputRef.current?.focus(), 100);
+    }
+  }, [showTemplates, isLoading, messages.length]);
 
+  // Novas sugestões de ação estilo ChatGPT
+  const renderActionSuggestions = () => {
+    // Não mostrar sugestões se houver campos de formulário na última mensagem
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage?.type === 'field') {
+      return null;
+    }
+    
+    const suggestions = [
+      {
+        title: "Configurar meu negócio",
+        description: "Responda algumas perguntas e crie seu atendente.",
+        icon: "🚀",
+        action: () => sendMessage("quero começar a configurar meu negócio")
+      },
+      {
+        title: "Testar o simulador",
+        description: "Veja como seu atendente responderá no WhatsApp.",
+        icon: "🧪",
+        action: () => sendMessage("quero testar o simulador agora")
+      },
+      {
+        title: "Conectar ao WhatsApp",
+        description: "Ative seu atendente no seu número oficial.",
+        icon: "📱",
+        action: () => {
+          const connectEvent = new CustomEvent('connectWhatsApp', {});
+          window.dispatchEvent(connectEvent);
+        }
+      },
+      {
+        title: "Ver planos e preços",
+        description: "Conheça os benefícios e assine um plano.",
+        icon: "👑",
+        action: () => sendMessage("quais os planos e preços?")
+      }
+    ];
 
   return (
-    <div className="flex-1 flex flex-col h-full min-h-0 overflow-hidden">
-      {/* Chat Container - Layout Mobile Otimizado */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden bg-white min-h-0">
-        <div className="w-full px-3 md:px-4 py-3 md:py-4 space-y-3 md:space-y-4 pb-24 md:pb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 max-w-2xl mx-auto mt-4">
+        {suggestions.map((sugg, index) => (
+          <button
+            key={index}
+            onClick={sugg.action}
+            className="p-4 bg-gray-50 hover:bg-gray-100 rounded-lg text-left transition-colors border border-gray-200"
+          >
+            <p className="font-semibold text-gray-800">{sugg.icon} {sugg.title}</p>
+            <p className="text-sm text-gray-500 mt-1">{sugg.description}</p>
+          </button>
+        ))}
+      </div>
+    );
+  };
+
+  const handleSuggestionClick = (suggestion: string) => {
+    switch (suggestion) {
+      case "Meu Funcionário":
+        const menuMessage: Message = {
+          id: generateUniqueId(),
+          content: `**Gerencie seu FuncionárioPro:**`,
+          sender: 'assistant',
+          timestamp: new Date(),
+          type: 'field',
+          fieldData: {
+            fieldName: 'employeeMenu',
+            fieldType: 'buttons',
+            options: [
+              { value: 'edit_config', label: '✏️ Editar' },
+              { value: 'test_whatsapp', label: '🧪 Testar' },
+              { value: 'reset_config', label: '🔄 Começar do Zero' }
+            ]
+          }
+        };
+        setMessages(prev => [...prev, menuMessage]);
+        break;
+      case "Testar WhatsApp":
+        setShowWhatsAppModal(true);
+        break;
+      case "Conectar ao WhatsApp":
+        window.dispatchEvent(new CustomEvent('openUpgradeModal'));
+        break;
+    }
+  };
+
+  const startGuidedEdit = () => {
+    // Definir sequência de campos a configurar
+    const steps = ['businessName', 'contactPhone', 'location', 'workingHours', 'services', 'paymentMethods', 'hasDelivery', 'acceptsReservations'];
+    setConfigSteps(steps);
+    setCurrentConfigStep(0);
+
+    const startMessage: Message = {
+      id: Date.now().toString(),
+      content: `📝 **Ok, vamos revisar sua configuração.**
+
+Vou mostrar cada campo para você confirmar ou alterar.`,
+      sender: 'assistant',
+      timestamp: new Date()
+    };
+    setMessages(prev => [...prev, startMessage]);
+
+    // Mostrar primeiro campo usando os dados atuais do agente
+    setTimeout(() => {
+      showConfigStepDirect(0, agentData, steps);
+    }, 1500);
+  };
+
+  return (
+    <div className="relative flex-1 h-full bg-white">
+      {/* Chat Container - Ocupa todo o espaço e permite rolagem */}
+      <div className="absolute top-0 left-0 right-0 bottom-0 overflow-y-auto pb-48">
+        <div className="w-full max-w-3xl mx-auto px-3 md:px-4 py-3 md:py-4 space-y-3 md:space-y-4">
       {showTemplates ? (
         renderTemplates()
       ) : (
         <>
+              {messages.length === 0 && !isLoading && (
+                <div className="text-center py-8">
+                  <div className="w-16 h-16 bg-black rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Bot className="w-8 h-8 text-white" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-800 mb-4">Como posso ajudar hoje?</h2>
+                  {renderActionSuggestions()}
+                </div>
+              )}
+
               {messages.map((message) => (
                 <div key={message.id} className="mb-3 md:mb-4">
                   <div className="flex items-start gap-2 md:gap-4 w-full max-w-full">
@@ -2488,6 +2675,7 @@ Perfeito! Você terá 7 dias para testar todas as funcionalidades sem pagar nada
                               setMessages(prev => prev.filter(m => m.id !== message.id));
                             }}
                             options={message.fieldData.options}
+                            confirmed={message.confirmed}
                           />
                           </div>
                         </div>
@@ -2549,41 +2737,102 @@ Perfeito! Você terá 7 dias para testar todas as funcionalidades sem pagar nada
         </div>
       </div>
 
-      {/* Input Area - FIXO NO MOBILE */}
+      {/* Input Area - Design flutuante com posicionamento absoluto */}
       {!showTemplates && (
-        <div className="fixed md:static bottom-0 left-0 right-0 border-t border-gray-200 bg-white p-3 md:p-4 z-50">
-          <div className="w-full max-w-full mx-auto">
-            <div className="flex items-center gap-2 w-full">
-              <div className="flex-1 relative w-full">
-                <input
-                  type="text"
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-white via-white/95 to-transparent pointer-events-none">
+          <div className="max-w-3xl mx-auto p-2 md:p-4 pointer-events-auto">
+            <div className="relative">
+              <textarea
+                ref={inputRef as React.RefObject<HTMLTextAreaElement>}
               value={currentMessage}
               onChange={(e) => setCurrentMessage(e.target.value)}
-              onKeyPress={handleKeyPress}
-                  placeholder="Digite sua mensagem..."
-                  className="w-full px-3 py-3 pr-12 bg-gray-50 border border-gray-300 rounded-lg text-sm md:text-base
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                  }
+                }}
+                placeholder="Pergunte alguma coisa..."
+                className="w-full pl-4 pr-14 py-4 bg-white border border-gray-300 rounded-2xl text-base
                     focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent
-                    placeholder-gray-500"
+                    placeholder-gray-500 shadow-xl resize-none h-36 md:h-40 pb-10"
             />
             <button
               onClick={() => sendMessage()}
               disabled={!currentMessage.trim() || isLoading}
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 
-                    bg-black hover:bg-gray-800 disabled:bg-gray-300 
-                    text-white rounded-lg p-1.5 md:p-2 transition-colors"
+                className="absolute right-3 top-4 transform
+                  bg-black hover:bg-gray-800 disabled:bg-gray-400 
+                  text-white rounded-lg w-10 h-10 flex items-center justify-center transition-colors"
             >
                   {isLoading ? (
-                    <div className="animate-spin rounded-full h-3 w-3 md:h-4 md:w-4 border-2 border-white border-t-transparent"></div>
+                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
                   ) : (
-                    <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                    </svg>
-                  )}
+                  <Send className="w-5 h-5" />
+                )}
+              </button>
+              
+              {/* Sugestões de Ação - Dentro do Input */}
+              <div className="absolute bottom-3 left-4 flex flex-wrap gap-2">
+                  <button
+                    onClick={() => handleSuggestionClick("Meu Funcionário")}
+                    className="text-xs text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg px-2 py-1 transition-colors font-medium"
+                  >
+                    Meu Funcionário
+                  </button>
+                  <button
+                    onClick={() => handleSuggestionClick("Testar WhatsApp")}
+                    className="text-xs text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg px-2 py-1 transition-colors font-medium"
+                  >
+                    Testar WhatsApp
+                  </button>
+                  <button
+                    onClick={() => handleSuggestionClick("Conectar ao WhatsApp")}
+                    className="text-xs text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg px-2 py-1 transition-colors font-medium"
+                  >
+                    Conectar WhatsApp
             </button>
           </div>
         </div>
       </div>
         </div>
+      )}
+
+      {/* Modal do WhatsApp Simulator */}
+      {showWhatsAppModal && (
+        <Dialog open={showWhatsAppModal} onOpenChange={setShowWhatsAppModal}>
+          <DialogContent className="sm:max-w-[425px] bg-white p-0">
+            <DialogHeader className="p-6 pb-0">
+              <DialogTitle className="flex items-center gap-3">
+                <span className="text-2xl">🏢</span>
+                <span>Simulação para {agentData.businessName || agentData.businessType || 'Seu Negócio'}</span>
+              </DialogTitle>
+              <DialogDescription className="pt-2">
+                Veja uma demonstração de como o FuncionárioPro atenderia um cliente real do seu negócio.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="p-6 pt-0">
+              <WhatsAppSimulator agentData={agentData} />
+              <div className="flex gap-2 mt-4">
+                <Button 
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => setShowWhatsAppModal(false)}
+                >
+                  Fechar
+                </Button>
+                <Button 
+                  className="flex-1 bg-black text-white hover:bg-gray-800"
+                  onClick={() => {
+                    setShowWhatsAppModal(false);
+                    window.dispatchEvent(new CustomEvent('openUpgradeModal'));
+                  }}
+                >
+                  Conectar WhatsApp
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   );

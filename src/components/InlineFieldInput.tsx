@@ -13,6 +13,7 @@ interface InlineFieldInputProps {
   onSubmit: (value: string) => void;
   onCancel: () => void;
   options?: Array<{ value: string; label: string }>;
+  confirmed?: boolean; // Novo prop para controlar se o campo foi confirmado
 }
 
 const InlineFieldInput: React.FC<InlineFieldInputProps> = ({
@@ -23,7 +24,8 @@ const InlineFieldInput: React.FC<InlineFieldInputProps> = ({
   currentValue = '',
   onSubmit,
   onCancel,
-  options
+  options,
+  confirmed = false
 }) => {
   // Converter valor para string segura
   const safeStringValue = (value: string | boolean | undefined): string => {
@@ -100,15 +102,35 @@ const InlineFieldInput: React.FC<InlineFieldInputProps> = ({
 
   // Usar sempre o fieldType original - sem conversões automáticas
 
+  // Se o campo foi confirmado, mostrar versão inativa
+  if (confirmed) {
+    return (
+      <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 my-2 opacity-80">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-sm">{getIcon()}</span>
+          <h3 className="font-medium text-gray-700 text-xs">
+            {fieldLabel}
+          </h3>
+          <span className="text-xs text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded">
+            ✓ Confirmado
+          </span>
+        </div>
+        <div className="text-sm text-gray-900 font-medium">
+          {safeStringValue(value)}
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 my-2 animate-in slide-in-from-bottom duration-300">
+    <div className="bg-white border border-gray-300 rounded-lg p-3 my-2 animate-in slide-in-from-bottom duration-300">
       <div className="flex items-center gap-2 mb-2">
         <span className="text-sm">{getIcon()}</span>
-        <h3 className="font-medium text-blue-900 text-xs">
+        <h3 className="font-medium text-gray-800 text-xs">
           {fieldLabel}
         </h3>
         {currentValue && (
-          <span className="text-xs text-blue-600 bg-blue-100 px-1.5 py-0.5 rounded text-xs">
+          <span className="text-xs text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded text-xs">
             Atualizando
           </span>
         )}
@@ -122,7 +144,7 @@ const InlineFieldInput: React.FC<InlineFieldInputProps> = ({
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={handleKeyPress}
             placeholder={placeholder}
-            className="text-sm border-blue-200 focus:border-blue-400 focus:ring-blue-400 min-h-[60px]"
+            className="text-sm border-gray-300 focus:border-black focus:ring-black min-h-[60px]"
             style={{ fontSize: '14px' }}
             rows={2}
           />
@@ -137,7 +159,7 @@ const InlineFieldInput: React.FC<InlineFieldInputProps> = ({
                 }}
                 variant="outline"
                 size="sm"
-                className="h-9 text-sm font-medium border-blue-200 hover:border-blue-400 hover:bg-blue-50 transition-all duration-200"
+                className="h-9 text-sm font-medium border-gray-300 hover:border-black hover:bg-gray-50 transition-all duration-200"
               >
                 {option.label}
               </Button>
@@ -151,7 +173,7 @@ const InlineFieldInput: React.FC<InlineFieldInputProps> = ({
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={handleKeyPress}
             placeholder={placeholder}
-            className="text-sm border-blue-200 focus:border-blue-400 focus:ring-blue-400 h-8"
+            className="text-sm border-gray-300 focus:border-black focus:ring-black h-8"
             style={{ fontSize: '14px' }}
           />
         )}
@@ -162,7 +184,7 @@ const InlineFieldInput: React.FC<InlineFieldInputProps> = ({
               onClick={handleSubmit}
               disabled={!safeStringValue(value).trim()}
               size="sm"
-              className="bg-blue-600 hover:bg-blue-700 text-white h-7 text-xs px-3"
+              className="bg-black hover:bg-gray-800 text-white h-7 text-xs px-3"
             >
               <Check className="w-3 h-3 mr-1" />
               Confirmar
@@ -185,7 +207,7 @@ const InlineFieldInput: React.FC<InlineFieldInputProps> = ({
         )}
 
         {currentValue && (
-          <div className="text-xs text-blue-600 bg-blue-100 p-2 rounded">
+          <div className="text-xs text-gray-600 bg-gray-100 p-2 rounded">
             <strong>Atual:</strong> {safeStringValue(currentValue)}
           </div>
         )}

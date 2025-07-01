@@ -1,0 +1,8 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#ffffff"/>
+  <rect x="50" y="50" width="1100" height="530" fill="#000000" rx="20"/>
+  <text x="600" y="250" font-family="Arial" font-size="48" font-weight="bold" text-anchor="middle" fill="#ffffff">FuncionárioPro</text>
+  <text x="600" y="320" font-family="Arial" font-size="24" text-anchor="middle" fill="#ffffff">Atendimento Inteligente WhatsApp</text>
+  <text x="600" y="380" font-family="Arial" font-size="20" text-anchor="middle" fill="#ffffff">Aumenta suas vendas 300% com IA</text>
+  <text x="600" y="450" font-family="Arial" font-size="18" text-anchor="middle" fill="#ffffff">Configure em 2 minutos • Teste grátis por 7 dias</text>
+</svg> 

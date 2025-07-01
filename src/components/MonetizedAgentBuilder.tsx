@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import AgentConfig from './AgentConfig';
 import WhatsAppSimulator from './WhatsAppSimulator';
 import PublishAgent from './PublishAgent';
 import SubscriptionPlans from './SubscriptionPlans';
 import CalibrationChat from './CalibrationChat';
 import ConfigurationEditor from './ConfigurationEditor';
-import { Bot, Menu, Plus, Send, Smartphone, Share, Crown, Settings, X, CreditCard, QrCode, MessageSquare } from 'lucide-react';
+import { Bot, Menu, Plus, Send, Smartphone, Share, Crown, Settings, X, CreditCard, QrCode, MessageSquare, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { toast } from 'sonner';
+
+// Importa os dados de templates
+import BUSINESS_TEMPLATES from '@/data/base_conhecimento_funcionario_ia.json';
+
+type BusinessType = keyof typeof BUSINESS_TEMPLATES.tipos_negocio;
 
 export interface AgentData {
   businessName: string;
@@ -48,19 +54,76 @@ interface PaymentData {
 }
 
 const MonetizedAgentBuilder = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  // Ler parâmetros da URL
+  const urlTipo = searchParams.get('tipo') || 'loja';
+  const urlNome = searchParams.get('nome');
+  const urlCustom = searchParams.get('custom');
+  
+  // Decodificar dados personalizados
+  const customData = urlCustom ? JSON.parse(decodeURIComponent(urlCustom)) : null;
+
+  // NOVA LÓGICA: Verificar se já existe configuração salva
+  const [hasExistingConfig, setHasExistingConfig] = useState(false);
+  const [showReconfigurePrompt, setShowReconfigurePrompt] = useState(false);
+  const [existingConfigData, setExistingConfigData] = useState<any>(null);
+
   const [currentStep, setCurrentStep] = useState<'configure' | 'publish'>('configure');
-  const [agentData, setAgentData] = useState<AgentData>({
-    businessName: '',
-    businessType: 'A ser definido',
-    businessInfo: '',
-    personality: 'amigável e profissional',
-    welcomeMessage: 'Olá! Como posso ajudá-lo hoje?',
-    template: 'A ser definido',
-    workingHours: '',
-    services: '',
-    location: '',
-    paymentMethods: '',
-    contactPhone: ''
+  const [agentData, setAgentData] = useState<AgentData>(() => {
+    // Verificar se há dados salvos na sessão
+    const savedData = sessionStorage.getItem('functionarioIA_data');
+    
+    if (savedData) {
+      try {
+        const parsedData = JSON.parse(savedData);
+        // Verificar se é uma configuração válida (tem nome e tipo de negócio)
+        if (parsedData.businessName && parsedData.businessType && 
+            parsedData.businessName.trim() !== '' && 
+            parsedData.businessName !== 'A ser definido' &&
+            parsedData.businessName !== 'Meu Negócio' &&
+            parsedData.businessName !== 'Minha Empresa') {
+          
+          setHasExistingConfig(true);
+          setExistingConfigData(parsedData);
+          
+          // Se veio com parâmetros na URL (tipo, nome, custom), mostrar prompt de reconfiguração
+          if (urlTipo || urlNome || urlCustom) {
+            setShowReconfigurePrompt(true);
+          }
+          
+          console.log('🔧 Configuração existente encontrada:', parsedData);
+          return parsedData;
+        }
+      } catch (e) {
+        console.error('Erro ao carregar dados salvos:', e);
+      }
+    }
+
+    // Se não há dados salvos ou são inválidos, usar lógica original
+    const businessType = (Object.keys(BUSINESS_TEMPLATES.tipos_negocio).includes(urlTipo) ? urlTipo : 'loja') as BusinessType;
+    const templateData = BUSINESS_TEMPLATES.tipos_negocio[businessType];
+    
+    const initialData = {
+      businessName: urlNome || templateData.configuracao_padrao.servicos,
+      businessType: businessType,
+      businessInfo: `Especializado em ${urlNome || templateData.profissoes.join(', ')}.`,
+      personality: "amigável e profissional",
+      welcomeMessage: `Olá! Bem-vindo(a) ao ${urlNome || 'nosso estabelecimento'}. Como posso ajudar?`,
+      template: businessType,
+      workingHours: templateData.configuracao_padrao.horarios,
+      services: templateData.exemplos_uso.join(', '),
+      location: "A ser definido",
+      paymentMethods: templateData.configuracao_padrao.pagamentos,
+      contactPhone: "A ser definido",
+      hasDelivery: templateData.configuracao_padrao.delivery,
+      acceptsReservations: templateData.configuracao_padrao.agendamento,
+      deliveryArea: "A ser definido",
+    };
+    
+    console.log('🎯 MonetizedAgentBuilder - dados iniciais personalizados:', initialData);
+    return initialData;
   });
 
   const [subscription, setSubscription] = useState<SubscriptionState>({
@@ -88,7 +151,7 @@ const MonetizedAgentBuilder = () => {
   const [couponApplied, setCouponApplied] = useState(false);
   const [timeLeft, setTimeLeft] = useState(15 * 60); // 15 minutos em segundos
 
-  // Detectar dispositivo
+  // Efeito para listeners e detecção de dispositivo
   useEffect(() => {
     const checkDevice = () => {
       const mobile = window.innerWidth < 768;
@@ -117,14 +180,22 @@ const MonetizedAgentBuilder = () => {
         setCouponApplied(false);
       }
     };
+
+    // NOVO: Event listener para modal de upgrade
+    const handleUpgradeModalEvent = (event: any) => {
+      console.log('🔥 Evento openUpgradeModal recebido:', event.detail);
+      setShowUpgradeModal(true);
+    };
     
     window.addEventListener('connectWhatsApp', handleConnectWhatsAppEvent);
     window.addEventListener('openPaymentModal', handlePaymentModalEvent);
+    window.addEventListener('openUpgradeModal', handleUpgradeModalEvent);
     
     return () => {
       window.removeEventListener('resize', checkDevice);
       window.removeEventListener('connectWhatsApp', handleConnectWhatsAppEvent);
       window.removeEventListener('openPaymentModal', handlePaymentModalEvent);
+      window.removeEventListener('openUpgradeModal', handleUpgradeModalEvent);
     };
   }, []);
 
@@ -154,6 +225,58 @@ const MonetizedAgentBuilder = () => {
         price: selectedPlan.price - selectedPlan.discount
       }));
     }
+  };
+
+  // NOVAS FUNÇÕES PARA RECONFIGURAÇÃO
+  const handleReconfigureYes = () => {
+    // Limpar dados salvos e iniciar nova configuração
+    sessionStorage.removeItem('functionarioIA_data');
+    setShowReconfigurePrompt(false);
+    setHasExistingConfig(false);
+    
+    // Carregar nova configuração baseada nos parâmetros da URL
+    const businessType = (Object.keys(BUSINESS_TEMPLATES.tipos_negocio).includes(urlTipo) ? urlTipo : 'loja') as BusinessType;
+    const templateData = BUSINESS_TEMPLATES.tipos_negocio[businessType];
+    
+    const newData = {
+      businessName: urlNome || templateData.configuracao_padrao.servicos,
+      businessType: businessType,
+      businessInfo: `Especializado em ${urlNome || templateData.profissoes.join(', ')}.`,
+      personality: "amigável e profissional",
+      welcomeMessage: `Olá! Bem-vindo(a) ao ${urlNome || 'nosso estabelecimento'}. Como posso ajudar?`,
+      template: businessType,
+      workingHours: templateData.configuracao_padrao.horarios,
+      services: templateData.exemplos_uso.join(', '),
+      location: "A ser definido",
+      paymentMethods: templateData.configuracao_padrao.pagamentos,
+      contactPhone: "A ser definido",
+      hasDelivery: templateData.configuracao_padrao.delivery,
+      acceptsReservations: templateData.configuracao_padrao.agendamento,
+      deliveryArea: "A ser definido",
+    };
+    
+    setAgentData(newData);
+    
+    // Trigger reconfiguração no chat
+    const reconfigEvent = new CustomEvent('startReconfiguration', {
+      detail: { 
+        businessType: businessType,
+        businessName: urlNome,
+        customData: customData
+      }
+    });
+    window.dispatchEvent(reconfigEvent);
+  };
+
+  const handleReconfigureNo = () => {
+    setShowReconfigurePrompt(false);
+    // Manter configuração existente, apenas mostrar opções de editar/conectar/assinar
+    const keepConfigEvent = new CustomEvent('keepExistingConfig', {
+      detail: { 
+        existingData: existingConfigData
+      }
+    });
+    window.dispatchEvent(keepConfigEvent);
   };
 
   const handleAgentUpdate = (newData: Partial<AgentData>) => {
@@ -510,6 +633,9 @@ const MonetizedAgentBuilder = () => {
           <CalibrationChat 
             agentData={agentData} 
             onAgentUpdate={handleAgentUpdate}
+            autoStartBusinessType={urlTipo}
+            specificBusinessName={urlNome || undefined}
+            customData={customData}
           />
         </div>
         
@@ -518,8 +644,14 @@ const MonetizedAgentBuilder = () => {
 
       {/* Modal de Conectar WhatsApp */}
       {showConnectWhatsApp && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl max-w-md w-full">
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={() => setShowConnectWhatsApp(false)}
+        >
+          <div 
+            className="bg-white rounded-xl max-w-md w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="p-6 border-b">
               <div className="flex items-center justify-between">
                 <div>
@@ -589,8 +721,14 @@ const MonetizedAgentBuilder = () => {
 
       {/* Modal de Pagamento */}
       {showPaymentModal && selectedPlan && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={() => setShowPaymentModal(false)}
+        >
+          <div 
+            className="bg-white rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="p-6 border-b">
               <div className="flex items-center justify-between">
                 <div>
@@ -611,30 +749,28 @@ const MonetizedAgentBuilder = () => {
               </div>
             </div>
             <div className="p-6">
-              {/* Oferta Especial com Countdown */}
+              {/* Oferta Especial com Countdown - Versão Sutil */}
               {timeLeft > 0 && (
-                <div className="mb-6 p-4 bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-lg">
-                  <div className="text-center">
-                    <h3 className="text-lg font-bold text-red-700 mb-2">
-                      🔥 OFERTA ESPECIAL - TEMPO LIMITADO!
-                    </h3>
-                    <div className="text-2xl font-bold text-red-700 mb-2">
-                      ⏰ {formatTime(timeLeft)}
+                <div className="mb-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-600 text-sm">🔥</span>
+                      <span className="text-sm font-medium text-gray-800">Oferta especial</span>
+                      <span className="text-xs text-gray-600 font-mono bg-gray-100 px-2 py-0.5 rounded">
+                        {formatTime(timeLeft)}
+                      </span>
                     </div>
-                    <p className="text-sm text-red-600 mb-3">
-                      Use o cupom <strong>{selectedPlan?.coupon}</strong> e ganhe <strong>R$ {selectedPlan?.discount?.toFixed(2)}</strong> de desconto!
-                    </p>
                     {!couponApplied ? (
                       <button
                         onClick={applyCoupon}
-                        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors"
+                        className="text-xs bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded-md font-medium transition-colors"
                       >
-                        APLICAR CUPOM - R$ {selectedPlan?.discount?.toFixed(2)} OFF
+                        R$ {selectedPlan?.discount?.toFixed(2)} OFF
                       </button>
                     ) : (
-                      <div className="text-gray-700 font-semibold">
-                        ✅ Cupom aplicado! Desconto de R$ {selectedPlan?.discount?.toFixed(2)}
-                      </div>
+                      <span className="text-xs text-gray-700 bg-gray-100 px-2 py-1 rounded">
+                        ✓ Desconto aplicado
+                      </span>
                     )}
                   </div>
                 </div>
@@ -680,7 +816,7 @@ const MonetizedAgentBuilder = () => {
                     <button
                       onClick={() => setPaymentData(prev => ({ ...prev, method: 'card' }))}
                       className={`p-3 border rounded-lg text-sm font-medium transition-colors ${
-                        paymentData.method === 'card' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-300'
+                        paymentData.method === 'card' ? 'border-gray-500 bg-gray-50 text-gray-700' : 'border-gray-300'
                       }`}
                     >
                       <CreditCard className="h-4 w-4 mx-auto mb-1" />
@@ -689,79 +825,139 @@ const MonetizedAgentBuilder = () => {
                   </div>
                 </div>
 
-                {/* PIX */}
+                {/* PIX - Checkout Profissional */}
                 {paymentData.method === 'pix' && (
-                  <div className="text-center space-y-4">
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <img 
-                        src={generatePixQRCode(selectedPlan.price)} 
-                        alt="QR Code PIX" 
-                        className="mx-auto mb-2"
-                      />
-                      <p className="text-sm text-gray-600">
-                        Escaneie o QR Code ou use a chave PIX:
-                      </p>
-                      <p className="font-mono text-sm bg-white p-2 rounded border mt-2">
-                        17 99161-0665
-                      </p>
-                      <p className="text-xs text-gray-500 mt-2">
-                        Valor: R$ {selectedPlan.price},00
-                      </p>
+                  <div className="space-y-4">
+                    {/* Cabeçalho PIX */}
+                    <div className="flex items-center gap-2 pb-2 border-b">
+                      <QrCode className="h-4 w-4 text-gray-600" />
+                      <span className="text-sm font-medium text-gray-900">Pagamento via PIX</span>
                     </div>
+                    
+                    {/* QR Code e Instruções */}
+                    <div className="bg-gray-50 border rounded-lg p-4">
+                      <div className="text-center mb-4">
+                        <img 
+                          src={generatePixQRCode(selectedPlan.price)} 
+                          alt="QR Code PIX" 
+                          className="mx-auto mb-3 rounded-lg shadow-sm"
+                          style={{ maxWidth: '160px' }}
+                        />
+                        <p className="text-xs text-gray-600 mb-2">
+                          Escaneie o código com seu app bancário
+                        </p>
+                      </div>
+                      
+                      {/* Chave PIX */}
+                      <div className="bg-white rounded-md border p-3">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-xs text-gray-500 mb-1">Chave PIX (telefone)</p>
+                            <p className="font-mono text-sm font-medium">17 99161-0665</p>
+                          </div>
+                          <button 
+                            onClick={() => navigator.clipboard.writeText('17991610665')}
+                            className="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded transition-colors"
+                          >
+                            Copiar
+                          </button>
+                        </div>
+                      </div>
+                      
+                      {/* Valor */}
+                      <div className="mt-3 text-center">
+                        <p className="text-xs text-gray-500">Valor a pagar</p>
+                        <p className="text-lg font-bold text-gray-900">R$ {paymentData.price.toFixed(2)}</p>
+                      </div>
+                    </div>
+                    
+                    {/* Segurança */}
+                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                      <div className="w-3 h-3 bg-gray-500 rounded-full flex items-center justify-center">
+                        <div className="w-1 h-1 bg-white rounded-full"></div>
+                      </div>
+                      <span>Pagamento seguro • Confirmação automática</span>
+                    </div>
+                    
                     <Button 
                       onClick={handlePaymentSubmit}
-                      className="w-full bg-black hover:bg-gray-800 text-white"
+                      className="w-full bg-black hover:bg-gray-800 text-white h-11"
                     >
+                      <Check className="w-4 h-4 mr-2" />
                       Confirmar Pagamento PIX
                     </Button>
                   </div>
                 )}
 
-                {/* Cartão */}
+                {/* Cartão - Checkout Profissional */}
                 {paymentData.method === 'card' && (
                   <div className="space-y-4">
-                    <div>
-                      <label className="text-sm text-gray-700 block mb-1">Número do Cartão</label>
-                      <Input
-                        placeholder="1234 5678 9012 3456"
-                        value={paymentData.cardNumber || ''}
-                        onChange={(e) => setPaymentData(prev => ({ ...prev, cardNumber: e.target.value }))}
-                      />
+                    {/* Cabeçalho Cartão */}
+                    <div className="flex items-center gap-2 pb-2 border-b">
+                      <CreditCard className="h-4 w-4 text-gray-600" />
+                      <span className="text-sm font-medium text-gray-900">Cartão de Crédito</span>
                     </div>
-                    <div>
-                      <label className="text-sm text-gray-700 block mb-1">Nome no Cartão</label>
-                      <Input
-                        placeholder="Seu Nome"
-                        value={paymentData.cardName || ''}
-                        onChange={(e) => setPaymentData(prev => ({ ...prev, cardName: e.target.value }))}
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
+                    
+                    <div className="space-y-3">
                       <div>
-                        <label className="text-sm text-gray-700 block mb-1">Validade</label>
+                        <label className="text-xs font-medium text-gray-700 block mb-1">Número do Cartão</label>
                         <Input
-                          placeholder="MM/AA"
-                          value={paymentData.cardExpiry || ''}
-                          onChange={(e) => setPaymentData(prev => ({ ...prev, cardExpiry: e.target.value }))}
+                          placeholder="1234 5678 9012 3456"
+                          value={paymentData.cardNumber || ''}
+                          onChange={(e) => setPaymentData(prev => ({ ...prev, cardNumber: e.target.value }))}
+                          className="h-10"
                         />
                       </div>
                       <div>
-                        <label className="text-sm text-gray-700 block mb-1">CVV</label>
+                        <label className="text-xs font-medium text-gray-700 block mb-1">Nome no Cartão</label>
                         <Input
-                          placeholder="123"
-                          value={paymentData.cardCvv || ''}
-                          onChange={(e) => setPaymentData(prev => ({ ...prev, cardCvv: e.target.value }))}
+                          placeholder="Como está no cartão"
+                          value={paymentData.cardName || ''}
+                          onChange={(e) => setPaymentData(prev => ({ ...prev, cardName: e.target.value }))}
+                          className="h-10"
                         />
                       </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-xs font-medium text-gray-700 block mb-1">Validade</label>
+                          <Input
+                            placeholder="MM/AA"
+                            value={paymentData.cardExpiry || ''}
+                            onChange={(e) => setPaymentData(prev => ({ ...prev, cardExpiry: e.target.value }))}
+                            className="h-10"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs font-medium text-gray-700 block mb-1">CVV</label>
+                          <Input
+                            placeholder="123"
+                            value={paymentData.cardCvv || ''}
+                            onChange={(e) => setPaymentData(prev => ({ ...prev, cardCvv: e.target.value }))}
+                            className="h-10"
+                          />
+                        </div>
+                      </div>
                     </div>
+                    
+                    {/* Segurança */}
+                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                      <div className="w-3 h-3 bg-gray-500 rounded-full flex items-center justify-center">
+                        <div className="w-1 h-1 bg-white rounded-full"></div>
+                      </div>
+                      <span>Dados protegidos por SSL • Transação segura</span>
+                    </div>
+                    
                     <Button 
                       onClick={handlePaymentSubmit}
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                      className="w-full bg-black hover:bg-gray-800 text-white h-11"
+                      disabled={!paymentData.cardNumber || !paymentData.cardName || !paymentData.cardExpiry || !paymentData.cardCvv}
                     >
-                      Pagar R$ {selectedPlan.price}
+                      <CreditCard className="w-4 h-4 mr-2" />
+                      Pagar R$ {paymentData.price.toFixed(2)}
                     </Button>
+                    
                     <p className="text-xs text-gray-500 text-center">
-                      Em caso de erro, entre em contato com o suporte
+                      Suporte: <a href="https://wa.me/551132300474" className="text-gray-600 hover:underline">WhatsApp</a>
                     </p>
                   </div>
                 )}
@@ -771,18 +967,83 @@ const MonetizedAgentBuilder = () => {
         </div>
       )}
 
-      {/* Modal de Upgrade */}
-      {showUpgradeModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+      {/* Modal de Reconfiguração */}
+      {showReconfigurePrompt && (
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={() => setShowReconfigurePrompt(false)}
+        >
+          <div 
+            className="bg-white rounded-xl max-w-md w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="p-6 border-b">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">
-                    Libere o Poder Total do seu FuncionárioPro
+                  <h2 className="text-xl font-bold text-gray-900">
+                    Configuração Detectada
                   </h2>
-                  <p className="text-gray-600 mt-2">
-                    Conecte ao WhatsApp e transforme seu atendimento hoje mesmo
+                  <p className="text-gray-600 mt-1 text-sm">
+                    Você já tem um estabelecimento configurado
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="p-6">
+              <div className="mb-4 p-4 bg-gray-50 rounded-lg">
+                <h3 className="font-semibold text-gray-900 mb-2">Configuração Atual:</h3>
+                <div className="space-y-1 text-sm text-gray-600">
+                  <p><strong>Nome:</strong> {existingConfigData?.businessName}</p>
+                  <p><strong>Tipo:</strong> {existingConfigData?.businessType}</p>
+                  <p><strong>WhatsApp:</strong> {existingConfigData?.contactPhone || 'Não configurado'}</p>
+                </div>
+              </div>
+              
+              <div className="space-y-3">
+                <p className="text-sm text-gray-700">
+                  Você quer configurar novamente ou manter sua configuração atual?
+                </p>
+                
+                <div className="space-y-2">
+                  <Button 
+                    onClick={handleReconfigureYes}
+                    className="w-full bg-black hover:bg-gray-800 text-white"
+                  >
+                    Sim, configurar novamente
+                  </Button>
+                  
+                  <Button 
+                    onClick={handleReconfigureNo}
+                    variant="outline"
+                    className="w-full border-gray-300 text-gray-700 hover:bg-gray-50"
+                  >
+                    Não, manter configuração atual
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Upgrade */}
+      {showUpgradeModal && (
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={() => setShowUpgradeModal(false)}
+        >
+          <div 
+            className="bg-white rounded-xl max-w-md w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-6 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900">
+                    Fazer Upgrade
+                  </h2>
+                  <p className="text-gray-600 mt-1 text-sm">
+                    Libere recursos avançados para seu negócio
                   </p>
                 </div>
                 <Button 
@@ -795,50 +1056,46 @@ const MonetizedAgentBuilder = () => {
               </div>
             </div>
             <div className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="space-y-4">
                 {plans.map((plan, index) => (
-                  <Card key={index} className="border-2 hover:border-gray-400 transition-colors cursor-pointer"
+                  <div key={index} className="border border-gray-200 rounded-lg p-4 hover:border-gray-400 cursor-pointer transition-colors"
                         onClick={() => handleSelectPlan(plan)}>
-                    <CardContent className="p-6">
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">{plan.name}</h3>
-                      <p className="text-gray-600 text-sm mb-4">{plan.description}</p>
-                      <div className="mb-4">
-                        {plan.originalPrice && plan.originalPrice !== plan.price && (
-                          <div className="text-sm text-gray-500 line-through">
-                            De R$ {plan.originalPrice.toFixed(2)}
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <h3 className="font-semibold text-gray-900">{plan.name}</h3>
+                        <p className="text-sm text-gray-600">{plan.description}</p>
+                        {plan.popular && (
+                          <span className="inline-block mt-1 px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">
+                            Mais Popular
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-right">
+                        {plan.monthlyEquivalent && (
+                          <div className="text-xs text-gray-500 line-through">
+                            R$ {plan.originalPrice.toFixed(2)}
                           </div>
                         )}
-                        <div className="text-3xl font-bold text-gray-900">
+                        <div className="text-2xl font-bold text-gray-900">
                           R$ {plan.price.toFixed(2)}
                         </div>
                         {plan.monthlyEquivalent ? (
-                          <div className="text-lg text-gray-600">
+                          <div className="text-sm text-gray-600">
                             R$ {plan.monthlyEquivalent.toFixed(2)}/mês
                           </div>
                         ) : (
-                          <div className="text-lg text-gray-600">/mês</div>
+                          <div className="text-sm text-gray-600">/mês</div>
                         )}
-                        {plan.popular && (
-                          <div className="mt-2">
-                            <span className="inline-block px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full font-semibold">
-                              Melhor Oferta
-                            </span>
                           </div>
-                        )}
                       </div>
-                      <ul className="space-y-2 mb-6">
+                    <div className="mt-2">
+                      <ul className="text-xs text-gray-600 space-y-1">
                         {plan.features.map((feature, idx) => (
-                          <li key={idx} className="text-sm text-gray-600 flex items-center">
-                            <span className="text-gray-700 mr-2">✓</span>
-                            {feature}
-                          </li>
+                          <li key={idx}>✓ {feature}</li>
                         ))}
                       </ul>
-                      <Button className="w-full" variant={index === 1 ? 'default' : 'outline'}>
-                        Escolher {plan.name}
-                      </Button>
-                    </CardContent>
-                  </Card>
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
