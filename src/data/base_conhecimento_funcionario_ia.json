@@ -172,6 +172,83 @@
         "Informar promoções vigentes",
         "Agendar retirada na loja"
       ]
+    },
+    "academia": {
+      "profissoes": ["academia", "ginásio", "personal trainer", "fitness", "musculação"],
+      "configuracao_padrao": {
+        "horarios": "Segunda a Sexta: 06:00 às 22:00, Sábado: 08:00 às 14:00",
+        "servicos": "Planos, Aulas, Musculação, Avaliação Física",
+        "pagamentos": "PIX, Cartão de Crédito/Débito",
+        "agendamento": true,
+        "delivery": false
+      },
+      "exemplos_uso": ["Informar planos e preços", "Agendar aula experimental", "Tirar dúvidas sobre treinos"]
+    },
+    "dentista": {
+      "profissoes": ["dentista", "odontologia", "consultório odontológico"],
+      "configuracao_padrao": {
+        "horarios": "Segunda a Sexta: 08:00 às 18:00",
+        "servicos": "Limpeza, Clareamento, Canal, Implantes",
+        "pagamentos": "PIX, Cartão, Convênio",
+        "agendamento": true,
+        "delivery": false
+      },
+      "exemplos_uso": ["Agendar consulta de avaliação", "Informar sobre tratamentos", "Confirmar horários"]
+    },
+    "advocacia": {
+      "profissoes": ["advogado", "advogada", "escritório de advocacia", "jurídico"],
+      "configuracao_padrao": {
+        "horarios": "Segunda a Sexta: 09:00 às 17:00",
+        "servicos": "Consultoria Jurídica, Áreas de Atuação (Civil, Trabalhista, etc.)",
+        "pagamentos": "PIX, Transferência Bancária",
+        "agendamento": true,
+        "delivery": false
+      },
+      "exemplos_uso": ["Agendar consulta inicial", "Qualificar casos", "Informar áreas de atuação"]
+    },
+    "contabilidade": {
+      "profissoes": ["contador", "contadora", "escritório de contabilidade"],
+      "configuracao_padrao": {
+        "horarios": "Segunda a Sexta: 08:30 às 17:30",
+        "servicos": "Abertura de Empresa, Imposto de Renda, Consultoria Fiscal",
+        "pagamentos": "PIX, Boleto",
+        "agendamento": true,
+        "delivery": false
+      },
+      "exemplos_uso": ["Agendar reunião", "Tirar dúvidas sobre impostos", "Solicitar documentos"]
+    },
+    "petshop": {
+      "profissoes": ["pet shop", "banho e tosa", "veterinário"],
+      "configuracao_padrao": {
+        "horarios": "Segunda a Sábado: 09:00 às 18:00",
+        "servicos": "Banho, Tosa, Venda de Produtos, Consultas",
+        "pagamentos": "PIX, Cartão, Dinheiro",
+        "agendamento": true,
+        "delivery": true
+      },
+      "exemplos_uso": ["Agendar banho e tosa", "Verificar estoque de produtos", "Lembrar de vacinas"]
+    },
+    "hotel": {
+      "profissoes": ["hotel", "pousada", "hospedagem"],
+      "configuracao_padrao": {
+        "horarios": "24 horas",
+        "servicos": "Reservas, Informações sobre quartos, Serviços de quarto",
+        "pagamentos": "PIX, Cartão de Crédito",
+        "agendamento": true,
+        "delivery": false
+      },
+      "exemplos_uso": ["Fazer uma reserva", "Perguntar sobre disponibilidade", "Solicitar serviço de quarto"]
+    },
+    "imobiliaria": {
+      "profissoes": ["imobiliária", "corretor de imóveis", "imóveis"],
+      "configuracao_padrao": {
+        "horarios": "Segunda a Sexta: 09:00 às 18:00, Sábado: 09:00 às 13:00",
+        "servicos": "Venda, Aluguel, Avaliação de Imóveis",
+        "pagamentos": "Transferência, Financiamento",
+        "agendamento": true,
+        "delivery": false
+      },
+      "exemplos_uso": ["Agendar visita a um imóvel", "Obter informações sobre um imóvel", "Qualificar leads"]
     }
   },
 

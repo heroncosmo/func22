@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import { Bot, Menu, X, ChevronDown, Star, Zap, Shield, Clock, Send } from 'lucide-react';
@@ -84,6 +84,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onTemplateSelect }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('');
   const [activeSimulator, setActiveSimulator] = useState<string | null>(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   // PLACEHOLDER ANIMADO COM EFEITO DE DIGITAÇÃO
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
@@ -341,7 +342,17 @@ const LandingPage: React.FC<LandingPageProps> = ({ onTemplateSelect }) => {
             <a href="https://wa.me/551132300474" className="text-sm text-gray-600 hover:text-gray-900">
               Suporte
             </a>
-            <Button variant="outline" size="sm" className="hidden md:inline-flex ml-4">Fazer login</Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="hidden md:inline-flex ml-4"
+              onClick={() => {
+                textAreaRef.current?.focus();
+                textAreaRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }}
+            >
+              Criar FuncionárioPro
+            </Button>
           </div>
         </div>
       </header>
@@ -376,6 +387,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onTemplateSelect }) => {
             
             <div className="relative">
               <textarea
+                ref={textAreaRef}
                 value={currentMessage}
                 onChange={(e) => setCurrentMessage(e.target.value)}
                 onKeyPress={(e) => {
@@ -492,7 +504,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onTemplateSelect }) => {
             {Object.entries(TEMPLATES).map(([key, template]) => (
               <div 
                 key={key} 
-                onClick={() => setActiveSimulator(key)}
+                onClick={() => handleTemplateSelect(key)}
                 className="group flex flex-col text-left p-6 bg-white rounded-2xl h-full border border-transparent hover:border-gray-300 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer"
               >
                 <div className="text-4xl mb-4">{template.icon}</div>
@@ -530,8 +542,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ onTemplateSelect }) => {
               <Button 
                 className="w-full mt-4 bg-black text-white hover:bg-gray-800"
                 onClick={() => {
+                  if (activeSimulator) {
+                    setCurrentMessage(`Quero criar um funcionário para ${TEMPLATES[activeSimulator as keyof typeof TEMPLATES].title}`);
+                  }
                   setActiveSimulator(null);
-                  onTemplateSelect(`Quero criar um funcionário para ${TEMPLATES[activeSimulator as keyof typeof TEMPLATES].title}`);
+                  setTimeout(() => {
+                    textAreaRef.current?.focus();
+                    textAreaRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  }, 100);
                 }}
               >
                 Criar meu FuncionárioPro

@@ -384,25 +384,24 @@ const MonetizedAgentBuilder = () => {
   };
 
   const handlePaymentSubmit = () => {
-    if (paymentData.method === 'pix') {
-      // Processar PIX
-      alert(`PIX de R$ ${paymentData.price} gerado! Após o pagamento seu plano será ativado automaticamente.`);
-      // Simular ativação da assinatura
-      setTimeout(() => {
-        setSubscription({
-          isSubscribed: true,
-          plan: paymentData.plan.toLowerCase() as any,
-          features: selectedPlan.features
-        });
-        setShowPaymentModal(false);
-        setShowUpgradeModal(false);
-        setShowConnectWhatsApp(false);
-      }, 2000);
-    } else {
-      // Simular erro no cartão
-      alert('Erro no processamento do cartão. Entre em contato com o suporte para assistência.');
-      openWhatsAppSupport("Olá! Tive um erro ao tentar pagar com cartão no FuncionárioPro. Preciso de ajuda.");
+    // Se o método for cartão, apenas exibe a mensagem de suporte
+    if (paymentData.method === 'card') {
+      toast.error('Pagamento com cartão indisponível no momento.', {
+        description: 'Por favor, entre em contato com o suporte via WhatsApp para finalizar sua assinatura.',
+        action: {
+          label: 'Contatar Suporte',
+          onClick: () => openWhatsAppSupport('Olá, gostaria de ajuda para finalizar minha assinatura com cartão.'),
+        },
+      });
+      return;
     }
+    
+    // Lógica existente para outros métodos (PIX)
+    console.log("Submetendo pagamento:", paymentData);
+    toast.success('Pagamento recebido!', {
+      description: 'Seu plano foi ativado com sucesso. Estamos preparando tudo para você.',
+    });
+    setShowPaymentModal(false);
   };
 
   return (
@@ -950,7 +949,6 @@ const MonetizedAgentBuilder = () => {
                     <Button 
                       onClick={handlePaymentSubmit}
                       className="w-full bg-black hover:bg-gray-800 text-white h-11"
-                      disabled={!paymentData.cardNumber || !paymentData.cardName || !paymentData.cardExpiry || !paymentData.cardCvv}
                     >
                       <CreditCard className="w-4 h-4 mr-2" />
                       Pagar R$ {paymentData.price.toFixed(2)}

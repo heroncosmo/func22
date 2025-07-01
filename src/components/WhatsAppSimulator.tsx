@@ -3,6 +3,21 @@ import { Bot, RefreshCw, Send } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from './ui/button';
 import { MISTRAL_CONFIG } from '../config/mistral-config.js'; // Importar configuração
+import BUSINESS_TEMPLATES from '../data/base_conhecimento_funcionario_ia.json'; // Importar templates
+
+interface TemplateStep {
+  fieldName: string;
+  fieldPrompt: string;
+}
+
+interface TemplateData {
+  businessName: string;
+  businessType: string;
+  businessInfo: string;
+  personality: string;
+  welcomeMessage: string;
+  steps: TemplateStep[];
+}
 
 interface AgentData {
   businessName: string;
@@ -35,14 +50,42 @@ interface Props {
   onClose?: () => void;
 }
 
-const WhatsAppSimulator: React.FC<Props> = ({ agentData, onClose }) => {
+const WhatsAppSimulator: React.FC<Props> = ({ templateKey, agentData: initialAgentData, onClose }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [key, setKey] = useState(0);
   const [isSimulationComplete, setIsSimulationComplete] = useState(false);
   const [testInput, setTestInput] = useState('');
   const [isTestMode, setIsTestMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentAgentData, setCurrentAgentData] = useState<AgentData | undefined>(initialAgentData);
   const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  // Carregar dados do agente a partir do templateKey se não forem passados diretamente
+  useEffect(() => {
+    if (templateKey && !initialAgentData) {
+      const templateData = (BUSINESS_TEMPLATES.tipos_negocio as any)[templateKey];
+      if (templateData) {
+        // Construir agentData a partir da estrutura real do JSON
+        setCurrentAgentData({
+          businessName: `Simulação ${templateKey.charAt(0).toUpperCase() + templateKey.slice(1)}`,
+          businessType: templateKey,
+          businessInfo: `Uma simulação de atendimento para ${templateKey}.`,
+          personality: "amigável e prestativo",
+          welcomeMessage: `Olá! Bem-vindo(a) à simulação de atendimento para ${templateKey}. Como posso ajudar?`,
+          template: templateKey,
+          services: templateData.configuracao_padrao?.servicos || 'Nossos serviços',
+          workingHours: templateData.configuracao_padrao?.horarios || 'Nosso horário',
+          location: 'Localização não informada na simulação',
+          paymentMethods: templateData.configuracao_padrao?.pagamentos || 'Nossas formas de pagamento',
+          contactPhone: 'Contato não informado na simulação',
+          hasDelivery: templateData.configuracao_padrao?.delivery || false,
+          acceptsReservations: templateData.configuracao_padrao?.agendamento || false,
+        });
+      }
+    } else if (initialAgentData) {
+      setCurrentAgentData(initialAgentData);
+    }
+  }, [templateKey, initialAgentData]);
 
   // Nova função central para chamar a API do Mistral
   const callMistralAI = async (prompt: string): Promise<string> => {
@@ -80,7 +123,7 @@ const WhatsAppSimulator: React.FC<Props> = ({ agentData, onClose }) => {
   };
 
   const generateSimulationWithAI = useCallback(async () => {
-    if (!agentData) return;
+    if (!currentAgentData) return;
 
     setMessages([]);
     setIsSimulationComplete(false);
@@ -91,18 +134,18 @@ const WhatsAppSimulator: React.FC<Props> = ({ agentData, onClose }) => {
       Sua tarefa é criar uma conversa realista, completa e HUMANIZADA entre um cliente e um atendente de IA para o negócio abaixo.
 
       DADOS DO NEGÓCIO:
-      - Nome: ${agentData.businessName}
-      - Tipo: ${agentData.businessType}
-      - Descrição: ${agentData.businessInfo}
-      - Personalidade do Atendente: ${agentData.personality}
-      - Mensagem de Boas-Vindas: ${agentData.welcomeMessage}
-      - Serviços/Produtos: ${agentData.services}
-      - Horários: ${agentData.workingHours}
-      - Localização: ${agentData.location}
-      - Pagamento: ${agentData.paymentMethods}
-      - Contato: ${agentData.contactPhone}
-      - Faz Entrega: ${agentData.hasDelivery ? 'Sim' : 'Não'}
-      - Aceita Agendamento: ${agentData.acceptsReservations ? 'Sim' : 'Não'}
+      - Nome: ${currentAgentData.businessName}
+      - Tipo: ${currentAgentData.businessType}
+      - Descrição: ${currentAgentData.businessInfo}
+      - Personalidade do Atendente: ${currentAgentData.personality}
+      - Mensagem de Boas-Vindas: ${currentAgentData.welcomeMessage}
+      - Serviços/Produtos: ${currentAgentData.services}
+      - Horários: ${currentAgentData.workingHours}
+      - Localização: ${currentAgentData.location}
+      - Pagamento: ${currentAgentData.paymentMethods}
+      - Contato: ${currentAgentData.contactPhone}
+      - Faz Entrega: ${currentAgentData.hasDelivery ? 'Sim' : 'Não'}
+      - Aceita Agendamento: ${currentAgentData.acceptsReservations ? 'Sim' : 'Não'}
 
       REGRAS ESTRITAS:
       1. A conversa DEVE ter um começo, meio e fim claros. O cliente inicia, o atendente resolve a questão, e o atendente finaliza a conversa de forma prestativa.
@@ -171,7 +214,7 @@ const WhatsAppSimulator: React.FC<Props> = ({ agentData, onClose }) => {
         console.error('❌ Falha ao gerar simulação após todas as tentativas.');
         setMessages([{ id: 1, sender: 'bot', content: 'Ops! Tive um problema para criar a simulação. Por favor, clique em "Reiniciar Simulação" para tentar de novo. Se o erro persistir, nossa equipe já foi notificada! 🛠️', delay: 0 }]);
     }
-  }, [agentData, key]);
+  }, [currentAgentData, key]);
 
   useEffect(() => {
     generateSimulationWithAI();
@@ -184,7 +227,7 @@ const WhatsAppSimulator: React.FC<Props> = ({ agentData, onClose }) => {
   }, [messages]);
 
   const handleTestMessage = async () => {
-    if (!testInput.trim() || !agentData) return;
+    if (!testInput.trim() || !currentAgentData) return;
 
     const userMessage: Message = {
       id: messages.length + 1,
@@ -201,17 +244,17 @@ const WhatsAppSimulator: React.FC<Props> = ({ agentData, onClose }) => {
       Você é um atendente de IA para o seguinte negócio:
 
       DADOS DO NEGÓCIO:
-      - Nome: ${agentData.businessName}
-      - Tipo: ${agentData.businessType}
-      - Descrição: ${agentData.businessInfo}
-      - Personalidade do Atendente: ${agentData.personality}
-      - Serviços/Produtos: ${agentData.services}
-      - Horários: ${agentData.workingHours}
-      - Localização: ${agentData.location}
-      - Pagamento: ${agentData.paymentMethods}
-      - Contato: ${agentData.contactPhone}
-      - Faz Entrega: ${agentData.hasDelivery ? 'Sim' : 'Não'}
-      - Aceita Agendamento: ${agentData.acceptsReservations ? 'Sim' : 'Não'}
+      - Nome: ${currentAgentData.businessName}
+      - Tipo: ${currentAgentData.businessType}
+      - Descrição: ${currentAgentData.businessInfo}
+      - Personalidade do Atendente: ${currentAgentData.personality}
+      - Serviços/Produtos: ${currentAgentData.services}
+      - Horários: ${currentAgentData.workingHours}
+      - Localização: ${currentAgentData.location}
+      - Pagamento: ${currentAgentData.paymentMethods}
+      - Contato: ${currentAgentData.contactPhone}
+      - Faz Entrega: ${currentAgentData.hasDelivery ? 'Sim' : 'Não'}
+      - Aceita Agendamento: ${currentAgentData.acceptsReservations ? 'Sim' : 'Não'}
       
       INSTRUÇÕES:
       1. Responda à pergunta do cliente de forma HUMANIZADA, NATURAL e específica para o negócio.
@@ -302,7 +345,7 @@ const WhatsAppSimulator: React.FC<Props> = ({ agentData, onClose }) => {
       </div>
 
       {/* Interface de Teste Interativo */}
-      {isSimulationComplete && agentData && (
+      {isSimulationComplete && currentAgentData && (
         <div className="mt-4 p-4 bg-gray-50 rounded-lg border">
           <div className="flex items-center justify-between mb-3">
             <div>
