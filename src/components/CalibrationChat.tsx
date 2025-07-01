@@ -2504,12 +2504,12 @@ Perfeito! Você terá 7 dias para testar todas as funcionalidades sem pagar nada
   }, [agentData]);
 
   // Foco automático no input
-  const inputRef = useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    if (!showTemplates && inputRef.current) {
-      setTimeout(() => inputRef.current?.focus(), 100);
-    }
-  }, [showTemplates, isLoading, messages.length]);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  // useEffect(() => {
+  //   if (!showTemplates && inputRef.current) {
+  //     setTimeout(() => inputRef.current?.focus(), 100);
+  //   }
+  // }, [showTemplates, isLoading, messages.length]);
 
   // Novas sugestões de ação estilo ChatGPT
   const renderActionSuggestions = () => {
