@@ -319,13 +319,54 @@ const MonetizedAgentBuilder = () => {
 
   // Gerar QR Code PIX
   const generatePixQRCode = (value: number) => {
-    const pixKey = "17991610665"; // Sua chave PIX
-    const merchantName = "FuncionárioPro";
-    const merchantCity = "SAO PAULO";
-    const txId = Math.random().toString(36).substring(7);
+    // Função para calcular o CRC16 (CCITT-FALSE)
+    const crc16 = (data: string): string => {
+      let crc = 0xFFFF;
+      for (let i = 0; i < data.length; i++) {
+        crc ^= data.charCodeAt(i) << 8;
+        for (let j = 0; j < 8; j++) {
+          crc = (crc & 0x8000) ? (crc << 1) ^ 0x1021 : crc << 1;
+        }
+      }
+      return (crc & 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
+    };
+
+    // Função para formatar campos do BR Code (ID + Tamanho + Valor)
+    const formatField = (id: string, val: string): string => {
+      const len = val.length.toString().padStart(2, '0');
+      return `${id}${len}${val}`;
+    };
+
+    // Dados para o PIX estático
+    const pixKey = '17991610665'; // Chave PIX fornecida
+    const merchantName = 'FuncionarioPro'; // Nome do beneficiário
+    const merchantCity = 'SAO PAULO'; // Cidade do beneficiário
+    const txid = '***'; // Identificador da transação (estático)
+
+    // Montagem do Payload do BR Code
+    const merchantAccountInfo = 
+      formatField('00', 'BR.GOV.BCB.PIX') +
+      formatField('01', pixKey);
+
+    const payloadFields = [
+      formatField('00', '01'), // Payload Format Indicator
+      formatField('26', merchantAccountInfo), // Merchant Account Information
+      formatField('52', '0000'), // Merchant Category Code
+      formatField('53', '986'), // Transaction Currency (BRL)
+      formatField('54', value.toFixed(2)), // Transaction Amount
+      formatField('58', 'BR'), // Country Code
+      formatField('59', merchantName), // Merchant Name
+      formatField('60', merchantCity), // Merchant City
+      formatField('62', formatField('05', txid)), // Additional Data Field
+    ];
     
-    // QR Code seria gerado aqui - por enquanto retorna URL de exemplo
-    return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=PIX:${pixKey}:${value}:${txId}`;
+    let payload = payloadFields.join('');
+    payload += '6304'; // CRC16 ID e tamanho
+
+    const payloadWithCrc = payload + crc16(payload);
+
+    // Retorna a URL da API que gera a imagem do QR Code
+    return `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(payloadWithCrc)}`;
   };
 
   const plans = [
