@@ -1248,6 +1248,9 @@ Preencherei com dados padrão, mas você pode editar tudo! 😊
       console.error('Erro ao salvar dados na sessão:', e);
     }
 
+    // Marcar configuração como concluída
+    setConfigData({ ...configData, isConfiguring: false });
+
     // Primeiro mostrar mensagem de conclusão
     const completionMessage: Message = {
       id: Date.now().toString(),
@@ -2511,11 +2514,18 @@ Perfeito! Você terá 7 dias para testar todas as funcionalidades sem pagar nada
   //   }
   // }, [showTemplates, isLoading, messages.length]);
 
-  // Função para detectar se há fluxo guiado ativo
-  const hasActiveGuidedFlow = () => {
-    // Verificar se a última mensagem é um campo não confirmado
-    const lastMessage = messages[messages.length - 1];
-    return lastMessage?.type === 'field' && !lastMessage.confirmed;
+  // Função para verificar se está em fluxo guiado
+  const isInGuidedFlow = () => {
+    // Verifica se há mensagens do tipo 'field' não confirmadas (fluxo ativo)
+    const hasActiveField = messages.some(message => 
+      message.type === 'field' && 
+      !message.confirmed &&
+      message.fieldData &&
+      message.fieldData.fieldName !== 'afterConfig' // Não considerar o campo final como fluxo guiado
+    );
+    
+    // Ou se está em processo de configuração
+    return hasActiveField || configData.isConfiguring;
   };
 
   // Novas sugestões de ação estilo ChatGPT
@@ -2745,7 +2755,7 @@ Vou mostrar cada campo para você confirmar ou alterar.`,
       </div>
 
       {/* Input Area - Design flutuante com posicionamento absoluto */}
-      {!showTemplates && !hasActiveGuidedFlow() && (
+      {!showTemplates && !isInGuidedFlow() && (
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-white via-white/95 to-transparent pointer-events-none">
           <div className="max-w-3xl mx-auto p-2 md:p-4 pointer-events-auto">
             <div className="relative">
